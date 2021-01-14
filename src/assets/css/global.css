@@ -1,0 +1,60 @@
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  padding: 0;
+  /* min-width: 1366px; */
+  /* background-color: #f5f5f7; */
+  background-color: #fff;
+}
+
+:root {
+  --color-txt: #666;
+  --color-high-txt: #ff5777;
+  --color-tint: #ff8189;
+  --color-background: #fff;
+  --font-size: 14px;
+  --line-height: 1.5;
+
+  --large-size: 50px;
+  /* --cvHeight: 1122.5px; */
+  --cvHeight: 1017.88px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.el-breadcrumb {
+  padding: 20px 0;
+  /* margin-bottom: 15px; */
+  font-size: 12px;
+}
+
+.pa {
+  position: absolute;
+}
+
+.pr {
+  position: relative;
+}
+
+.fcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.txt-overflow {
+  word-break: keep-all;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.flex1 {
+  flex: 1;
+  overflow: hidden;
+}

@@ -1,0 +1,391 @@
+<template>
+  <div class="editor-wrapper">
+    <!-- <h2>{{ this.$route.params.usrid }}</h2> -->
+    <div class="pc-nav">
+      <nav-container>
+        <div class="left" slot="left">
+          <router-link :to="{ path: '/cvs' }" class="mycv">
+            <i class="el-icon-arrow-left"></i>
+            <div>我的简历</div>
+          </router-link>
+          <div class="edit">
+            <span class="name">吴承炜</span>
+            <i class="iconfont icon-bianji"></i>
+          </div>
+        </div>
+        <div class="middle" slot="middle">
+          <div style="display:inline-flex;">
+            <hide>
+              <div slot="content">
+                此刻有 <span class="number">8,947</span> 位求职者在超级简历陪你
+              </div>
+              <div slot="hide" class="discuss">
+                <h1>加入校友群讨论</h1>
+                <span class="desc">你有 264 个校友已加入超级校友群</span>
+                <img
+                  src="https://files.wondercv.com/image/app-download-group.png"
+                  alt=""
+                />
+                <span class="desc1">扫码下载APP 获取校友内推资源</span>
+              </div>
+            </hide>
+          </div>
+        </div>
+
+        <div class="right" slot="right">
+          <div class="btn-wrap">
+            <div class="translation" @click="translation">翻译</div>
+            <hide class="send">
+              <div slot="content" class="hover-icon">
+                发送
+              </div>
+              <div slot="hide" class="share-wrap">
+                <share></share>
+              </div>
+            </hide>
+            <hide class="more">
+              <div slot="content" class="hover-icon">
+                <i class="el-icon-more"></i>
+              </div>
+              <div slot="hide">
+                <div class="cv-option">
+                  <div
+                    class="cv-list"
+                    v-for="item in options"
+                    :key="item.name"
+                    @click="optionFunc($event, item.id)"
+                  >
+                    <i class="el-icon-delete"></i>{{ item.name }}
+                  </div>
+                </div>
+              </div>
+            </hide>
+          </div>
+        </div>
+      </nav-container>
+    </div>
+    <div class="index-main">
+      <editor-body></editor-body>
+    </div>
+  </div>
+</template>
+
+<script>
+import navContainer from '@/views/common/Navgation.vue'
+import EditorBody from './EditorBody.vue'
+import Hide from '@/views/common/Hide'
+import Share from '@/views/common/pendant/Share'
+
+export default {
+  components: {
+    navContainer,
+    EditorBody,
+    Hide,
+    Share,
+  },
+  data() {
+    return {
+      options: [
+        { name: '下载文件', id: 1 },
+        { name: '打印简历', id: 2 },
+        { name: '复制简历', id: 3 },
+        { name: '删除', id: 4 },
+      ],
+    }
+  },
+  created() {
+    // this.downloadCV()
+  },
+  methods: {
+    translation() {
+      console.log('translate')
+    },
+
+    optionFunc(e, id) {
+      switch (id) {
+        case 1:
+          this.downloadCV()
+          break
+        case 2:
+          this.printCV()
+          break
+        case 3:
+          this.copyCV()
+          break
+        case 4:
+          this.deleteCV()
+          break
+      }
+    },
+
+    downloadCV() {
+      var cloneNode = function(node, javascriptEnabled) {
+        // Recursively clone the node.
+        var clone =
+          node.nodeType === 3
+            ? document.createTextNode(node.nodeValue)
+            : node.cloneNode(false)
+        for (var child = node.firstChild; child; child = child.nextSibling) {
+          if (
+            javascriptEnabled === true ||
+            child.nodeType !== 1 ||
+            child.nodeName !== 'SCRIPT'
+          ) {
+            clone.appendChild(cloneNode(child, javascriptEnabled))
+          }
+        }
+
+        if (node.nodeType === 1) {
+          // Preserve contents/properties of special nodes.
+          if (node.nodeName === 'CANVAS') {
+            clone.width = node.width
+            clone.height = node.height
+            clone.getContext('2d').drawImage(node, 0, 0)
+          } else if (
+            node.nodeName === 'TEXTAREA' ||
+            node.nodeName === 'SELECT'
+          ) {
+            clone.value = node.value
+          }
+
+          // Preserve the node's scroll position when it loads.
+          clone.addEventListener(
+            'load',
+            function() {
+              clone.scrollTop = node.scrollTop
+              clone.scrollLeft = node.scrollLeft
+            },
+            true,
+          )
+        }
+
+        // Return the cloned node.
+        return clone
+      }
+
+      const resume = cloneNode(document.getElementById('resume'), true)
+      resume.style.width = '190mm'
+      resume.style.height = '841px'
+      resume.style.fontFamily = 'FZLTCXHJW'
+      resume.style.letterSpacing = '1.2px'
+      
+
+      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
+      // console.log(pdf.getFontList())
+
+      let opt = {}
+      pdf.html(resume, {
+        callback: function(pdf) {
+          pdf.save('wcw.pdf')
+        },
+      })
+    },
+    printCV() {
+      console.log(2)
+    },
+    copyCV() {},
+    deleteCV() {},
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.pc-nav {
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9;
+  background-color: #202329;
+  box-sizing: border-box;
+  user-select: none;
+}
+.left {
+  line-height: 32px;
+  left: 0;
+  top: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #efefef;
+  .mycv {
+    display: flex;
+    align-items: center;
+    margin-right: 50px;
+  }
+  .edit {
+    .name {
+      margin-right: 5px;
+    }
+  }
+  .mycv {
+    color: #efefef;
+  }
+  .mycv:hover,
+  .edit:hover {
+    color: #fff;
+  }
+}
+
+.middle {
+  color: #efefef;
+  line-height: 56px;
+  // left: 50%;
+  // transform: translateX(-50%);
+  // padding-right: 50px;
+  // display: flex;
+  // flex: 1;
+  .number {
+    color: #ff6644;
+  }
+}
+.middle:hover {
+  color: #fff;
+  .number {
+    font-weight: 500;
+  }
+}
+
+.right {
+  display: flex;
+  // align-items: center;
+
+  .translation,
+  .send,
+  .more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 26px;
+    padding: 1px 6px;
+
+    border-radius: 15px;
+    font-size: 14px;
+    color: #fff;
+  }
+  .translation,
+  .more {
+    border: 1px solid #797b7e;
+    background: #202329;
+  }
+  .translation:hover,
+  .more:hover {
+    border: 1px solid #fff;
+  }
+  .send {
+    background-color: #f64;
+    border: 1px solid #f64;
+    margin: 0 0 0 16px;
+    margin-right: 10px;
+  }
+  .send:hover {
+    background-color: #ff856a;
+    border: 1px solid #ff856a;
+  }
+  .hover-icon {
+    line-height: 56px;
+    width: 55px;
+  }
+}
+
+.discuss {
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  padding: 26px 0;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.13);
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  h1 {
+    color: #404040;
+    line-height: 32px;
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .desc {
+    font-weight: 400;
+    color: #9c9c9c;
+    line-height: 22px;
+    margin-bottom: 22px;
+    font-size: 14px;
+  }
+  img {
+    width: 176px;
+    height: 176px;
+    margin-bottom: 10px;
+  }
+  .desc1 {
+    font-weight: 400;
+    color: #9c9c9c;
+    line-height: 20px;
+    font-size: 14px;
+  }
+}
+.share-wrap {
+  width: 457px;
+  height: 261px;
+
+  position: absolute;
+  right: -50px;
+  top: 44px;
+}
+
+.cv-option {
+  width: 170px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  display: inline;
+  box-shadow: 0 2px 12px 0 hsla(0, 0%, 50.2%, 0.12);
+  overflow: hidden;
+  transform: translate(-50%, 100%);
+  .cv-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    height: 53px;
+    background: #fff;
+    color: #404040;
+    font-size: 14px;
+    position: relative;
+    line-height: 53px;
+    text-align: left;
+    padding: 10px 0;
+    box-sizing: border-box;
+  }
+  .cv-list::after {
+    position: absolute;
+    display: block;
+    content: '';
+    background: rgb(228, 228, 228);
+    height: 1px;
+    width: 128px;
+    bottom: 0;
+  }
+  .cv-list:last-child::after {
+    display: none;
+  }
+  .cv-list:hover {
+    background: #f9f9f9;
+  }
+}
+
+.index-main {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 72px;
+}
+</style>
