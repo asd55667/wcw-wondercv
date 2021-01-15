@@ -16,12 +16,11 @@ const config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || ""
   baseURL: 'http://localhost:8081/',
 
-  // timeout: 60 * 1000, // Timeout
+  timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 }
 
 const _axios = axios.create(config)
-
 
 _axios.interceptors.request.use(
   function(config) {
@@ -29,7 +28,7 @@ _axios.interceptors.request.use(
     NProgress.start()
     const token = window.localStorage.getItem('token')
     if (token) config.headers.common['Authorization'] = 'Bearer ' + token
-
+    config.headers['wcw-key'] = 123
     return config
   },
   function(error) {
@@ -37,7 +36,6 @@ _axios.interceptors.request.use(
     return Promise.reject(error)
   },
 )
-
 
 _axios.interceptors.response.use(
   function(response) {
@@ -52,8 +50,7 @@ _axios.interceptors.response.use(
   },
 )
 
-
-// install 
+// install
 Plugin.install = function(Vue, options) {
   Vue.axios = _axios
   window.axios = _axios
