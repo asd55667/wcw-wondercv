@@ -1,3 +1,3 @@
-import './axios'
-import './element'
-import './global'
+export * from './axios'
+export * from './element'
+export * from './global'

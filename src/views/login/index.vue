@@ -126,6 +126,8 @@
 </template>
 
 <script>
+import { authTest, getLoginCode, authLogin } from '@/api'
+
 export default {
   data() {
     return {
@@ -164,7 +166,7 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
-        valCode: 'CB5E',
+        valCode: '74C5',
       },
       loginFormRules: {
         email: [
@@ -184,9 +186,7 @@ export default {
       valCodeCountDown: 30,
     }
   },
-  created() {
-    this.reloadQRcode()
-  },
+
   methods: {
     reloadQRcode(isEmployee) {
       // init call in created
@@ -215,7 +215,7 @@ export default {
       // get login code
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await this.$http.post('get-login-code', {
+        const res = await getLoginCode({
           email: this.loginForm.email,
         })
         if (res.status !== 200)
@@ -242,15 +242,15 @@ export default {
     async loginWithEmail() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await this.$http.post('login', {
-          email: this.loginForm,
-        })
+        const res = await authLogin(this.loginForm)
+        console.log(res)
         if (res.status !== 200) return this.$message.error(`登录失败`)
         if (res.data.code === -1) {
           this.$message.warning(`${res.data.msg}`)
         } else {
           this.$message.success(`登录成功`)
-          window.sessionStorage.setItem('token', res.data.token)
+          window.localStorage.setItem('access_token', res.data.access_token)
+          window.localStorage.setItem('refresh_token', res.data.refresh_token)
         }
       })
     },
@@ -269,12 +269,19 @@ export default {
     },
     async getUser() {
       // console.log(1)
-      const res = await this.$http.get(
-        'http://localhost:8081/auth/github/userinfo',
-      )
+      // const res = await this.$http.get(
+      //   'http://localhost:8081/auth/github/userinfo',
+      // )
       // console.log(`res: ${res.data}`)
       // this.userInfo = res.data
     },
+    async test() {
+      const res = await authTest()
+    },
+  },
+  created() {
+    this.reloadQRcode()
+    this.test()
   },
 }
 </script>

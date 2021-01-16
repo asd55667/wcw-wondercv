@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import axios from 'axios'
 
-import { Loading } from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -20,54 +19,55 @@ const config = {
   // withCredentials: true, // Check cross-site Access-Control
 }
 
-const _axios = axios.create(config)
+export const request = axiosFactory(
+  config,
+  reqInterceptorFactory('access_token'),
+  errInterceptor,
+  resInterceptorFactory('access_token'),
+  errInterceptor,
+)
 
-_axios.interceptors.request.use(
-  function(config) {
-    // Do something before request is sent
-    NProgress.start()
-    const token = window.localStorage.getItem('token')
+// with Loading
+export const refreshRequest = axiosFactory(
+  config,
+  reqInterceptorFactory('refresh_token'),
+  errInterceptor,
+  resInterceptorFactory('refresh_token'),
+  errInterceptor,
+)
+
+function axiosFactory(
+  config,
+  reqInterceptor,
+  reqErrInterceptor,
+  resInterceptor,
+  resErrInterceptor,
+) {
+  const _axios = axios.create(config)
+  _axios.interceptors.request.use(reqInterceptor, reqErrInterceptor)
+  _axios.interceptors.response.use(resInterceptor, resErrInterceptor)
+  return _axios
+}
+
+function reqInterceptorFactory(local) {
+  return function(config) {
+    if (local === 'access_token') NProgress.start()
+    const token = window.localStorage.getItem(local)
     if (token) config.headers.common['Authorization'] = 'Bearer ' + token
     config.headers['wcw-key'] = 123
     return config
-  },
-  function(error) {
-    // Do something with request error
-    return Promise.reject(error)
-  },
-)
-
-_axios.interceptors.response.use(
-  function(response) {
-    // Do something with response data
-    NProgress.done()
-
-    return response
-  },
-  function(error) {
-    // Do something with response error
-    return Promise.reject(error)
-  },
-)
-
-// install
-Plugin.install = function(Vue, options) {
-  Vue.axios = _axios
-  window.axios = _axios
-  Object.defineProperties(Vue.prototype, {
-    axios: {
-      get() {
-        return _axios
-      },
-    },
-    $axios: {
-      get() {
-        return _axios
-      },
-    },
-  })
+  }
 }
 
-Vue.use(Plugin)
+function resInterceptorFactory(local) {
+  return function(response) {
+    if (local === 'access_token') {
+      NProgress.done()
+    }
+    return response
+  }
+}
 
-export default Plugin
+function errInterceptor(err) {
+  return Promise.reject(err)
+}

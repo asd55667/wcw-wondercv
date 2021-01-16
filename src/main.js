@@ -8,10 +8,7 @@ import './plugins'
 
 // import '@/style/index.scss'
 
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-
-Vue.prototype.$http = axios
+// Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 
