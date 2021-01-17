@@ -12,13 +12,11 @@
 <script>
 import MenuLeft from './MenuLeft'
 
-import { SideContent0 } from './form'
-import {
-  SideContent1,
-  SideContent2,
-  SideContent3,
-  SideContent4,
-} from './side-content'
+import SideContent0 from './form'
+import SideContent1 from './side-content/check'
+import SideContent2 from './side-content/experience'
+import SideContent3 from './side-content/styleSetting'
+import SideContent4 from './side-content/moduleManage'
 
 export default {
   components: {

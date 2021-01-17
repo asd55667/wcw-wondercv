@@ -47,29 +47,32 @@ export default {
     return {
       scale: 0.906801,
       // scale: 1,
-      screenWidth: '',
-      screenHeight: '',
+      // screenWidth: '',
+      // screenHeight: '',
       resumeWidth: '',
+      rawWidth: 0,
     }
   },
   mounted() {
     this.resumeWidth = this.$el.offsetWidth
+    this.rawWidth = this.$el.offsetWidth
     window.onresize = () => {
       return (() => {
         let marginRight = getComputedStyle(
-          document.querySelector('.editor-wrap'),
+          document.querySelector('.index-main'),
           null,
         ).marginRight.slice(0, -2)
+        console.log('margin', marginRight)
         marginRight = +marginRight + 15
         if (marginRight > -270 && marginRight < 0) {
           this.resumeWidth = Math.max(450, this.resumeWidth + marginRight)
         } else if (marginRight >= 0) {
-          if (this.activeId !== 0) this.resumeWidth = 720
+          if (this.activeId !== 0) {
+            this.resumeWidth = this.rawWidth
+          }
         }
       })()
     }
-
-    // this.$resume = this.$refs.resumeRef
   },
   watch: {
     resumeWidth(val) {
@@ -86,7 +89,7 @@ export default {
     activeId(val) {
       if (val !== 0) {
         setTimeout(() => {
-          this.resumeWidth = 720
+          this.resumeWidth = this.rawWidth
         }, 300)
       }
     },

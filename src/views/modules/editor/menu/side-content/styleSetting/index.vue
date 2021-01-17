@@ -14,15 +14,19 @@
       <Style></Style>
     </div>
     <div class="rank-wrap" :hidden="activeId !== 1">
-      rank
+      <Rank>rank</Rank>
     </div>
   </div>
 </template>
 
 <script>
-import { Style } from './Style'
+import Style from './Style.vue'
+import Rank from './Rank'
 export default {
-  components: { Style },
+  components: {
+    Style,
+    Rank,
+  },
   data() {
     return {
       tabs: ['样式', '排版'],

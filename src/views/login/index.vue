@@ -275,8 +275,9 @@ export default {
       // console.log(`res: ${res.data}`)
       // this.userInfo = res.data
     },
-    async test() {
-      const res = await authTest()
+     test() {
+      const res =  authTest()
+      console.log(res)
     },
   },
   created() {
