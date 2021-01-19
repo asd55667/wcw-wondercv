@@ -50,8 +50,8 @@ export default {
     }
   },
   created() {
-    const token = window.sessionStorage.getItem('token')
-    if (token) this.middleNav.unshift({ entry: '我的简历', url: '/cvs', id: 1 })
+    const token = window.localStorage.getItem('access_token')
+    if (!token) this.middleNav.unshift({ entry: '我的简历', url: '/cvs', id: 1 })
   },
   methods: {
     switchTab(idx) {

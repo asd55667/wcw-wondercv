@@ -1,57 +1,63 @@
 import { refreshRequest, request } from '@/plugins'
 
-// export const authTest = async n => {
+// function refresh(target, name, descriptor) {
+//   let old = descriptor.value
+
 //   let i = 1
-//   try {
-//     const res = await request.get('auth')
-//     console.log(res)
-//   } catch (err) {
-//     console.log(err)
-//     const res = await refreshRequest.get('refresh-token')
-//     console.log(res)
-//     window.localStorage.setItem('access_token', res.data.access_token)
-//     i++
-//     if (i < 2)
-//       setTimeout(() => {
-//         authTest(i)
-//       }, 200)
+//   descriptor.value = async function(n) {
+//     try {
+//       console.log('i ', i, arguments)
+//       const res = await old.apply(this, arguments)
+//       console.log('decorator, ', res)
+//       return res
+//     } catch (err) {
+//       console.log(err)
+//       try {
+//         const res = await refreshRequest.get('refresh-token')
+//         console.log('re', res)
+//         window.localStorage.setItem('access_token', res.data.access_token)
+//       } catch (err) {
+//         // login again
+//         localStorage.removeItem('refresh_token')
+//         localStorage.removeItem('access_token')
+//       }
+//       i++
+//       if (i < 3) return descriptor.value(...arguments)
+//     }
+//   }
+//   return descriptor
+// }
+
+// class RefreshRequest {
+//   @refresh
+//   async request() {
+//     return await request(...arguments)
 //   }
 // }
 
-function refresh(target, name, descriptor) {
-  let old = descriptor.value
+// export const rrquest = new RefreshRequest()
 
+export async function rrquest() {
   let i = 1
-  descriptor.value = async function helper(n) {
+  async function func() {
     try {
-      console.log('i ', i, arguments)
-      const res = await old.apply(this, arguments)
+      const res = await request(...arguments)
+      // console.log('decorator, ', res)
+      return res
     } catch (err) {
-      console.log(err)
-      const res = await refreshRequest.get('refresh-token')
-      console.log(res)
-      window.localStorage.setItem('access_token', res.data.access_token)
+      try {
+        const res = await refreshRequest.get('refresh-token')
+        // console.log('refresh', res)
+        window.localStorage.setItem('access_token', res.data.access_token)
+      } catch (err) {
+        // login again
+        localStorage.removeItem('refresh_token')
+        localStorage.removeItem('access_token')
+      }
       i++
-      if (i < 3)
-        setTimeout(() => {
-          helper(...arguments)
-        }, 100)
+      if (i < 3) return func(...arguments)
     }
   }
-  return descriptor
+
+  return await func(...arguments)
 }
-
-class RefreshRequest {
-  @refresh
-  async request() {
-    const res = await request(...arguments)
-    console.log('decorator, ', res)
-    return res
-  }
-}
-
-export const rrquest = new RefreshRequest()
-
-// /Public/player/m3u8.php?url=https://douban.donghongzuida.com/20210106/15299_54a3e215/index.m3u8
-// ffmpeg -i 'https://douban.donghongzuida.com/20210106/15299_54a3e215/index.m3u8' -bsf:a aac_adtstoasc \
-//     -vcodec copy -c copy -crf 50 file.mp4

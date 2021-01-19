@@ -45,7 +45,7 @@
               src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQHf7zwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAya3dWNVJYN3hmeTMxTWxEbzF2Y1kAAgTZJthfAwQ8AAAA"
               alt=""
               :style="`display: ${isLoading ? 'none' : 'inline'};`"
-              @click="oauth"
+              @click="oauth2"
             />
             <!-- <img
               class="git-img"
@@ -126,7 +126,8 @@
 </template>
 
 <script>
-import { authTest, getLoginCode, authLogin } from '@/api'
+import { authTest, getLoginCode, authLogin, gitLogin } from '@/api'
+import { refreshRequest, request } from '@/plugins'
 
 export default {
   data() {
@@ -141,7 +142,7 @@ export default {
       switchTxt: ['简历', '招聘'],
 
       // the way of login
-      isWxLogin: false,
+      isWxLogin: true,
       toggers: [
         {
           img_src:
@@ -166,7 +167,7 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
-        valCode: '74C5',
+        valCode: '868A',
       },
       loginFormRules: {
         email: [
@@ -220,7 +221,7 @@ export default {
         })
         if (res.status !== 200)
           return this.$message.error(`获取验证码失败, ${res.data.msg}`)
-        if (res.data.code === 0) {
+        if (res.data.code === -1) {
           this.$message.warning(`${res.data.msg}`)
         } else {
           this.$message.success(`${res.data.msg}`)
@@ -255,34 +256,30 @@ export default {
       })
     },
 
-    // git oauth login
-    async oauth() {
-      window.open('http://localhost:8081/auth/github/login', '_blank')
-      const intervalId = setInterval(() => {
-        // console.log('Auth...')
-        if (window.localStorage.getItem('authSuccess')) {
-          clearInterval(intervalId)
-          window.localStorage.removeItem('authSuccess')
-          this.getUser()
+    // github oauth2 login
+    async oauth2() {
+      window.open('http://localhost:8081/github', '_blank')
+      // window.open('/github', '_blank')
+      const ticker = setInterval(async () => {
+        console.log('Auth...')
+        if (window.localStorage.getItem('access_token')) {
+          clearInterval(ticker)
+          const res = await gitLogin()
+          // console.log(res)
         }
-      }, 500)
+      }, 1000)
     },
-    async getUser() {
-      // console.log(1)
-      // const res = await this.$http.get(
-      //   'http://localhost:8081/auth/github/userinfo',
-      // )
-      // console.log(`res: ${res.data}`)
-      // this.userInfo = res.data
-    },
-     test() {
-      const res =  authTest()
-      console.log(res)
+
+    async test() {
+      const a = 1
+      const res = await authTest()
+      // const res = await refreshRequest('github/login')
+      console.log('test ', res)
     },
   },
   created() {
     this.reloadQRcode()
-    this.test()
+    // this.test()
   },
 }
 </script>

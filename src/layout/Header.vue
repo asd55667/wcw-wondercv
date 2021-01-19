@@ -97,9 +97,8 @@ export default {
     }
   },
   created() {
-    // window.sessionStorage.setItem('token', 'wcw')
-    const token = window.sessionStorage.getItem('token')
-    if (token) this.isLogin = true
+    const token = window.localStorage.getItem('access_token')
+    // if (token) this.isLogin = true
   },
   methods: {
     login() {
@@ -121,7 +120,8 @@ export default {
         case 5:
           ;(() => {
             console.log(1)
-            window.sessionStorage.removeItem('token')
+            window.sessionStorage.removeItem('access_token')
+            window.sessionStorage.removeItem('refresh_token')
           })()
           break
       }
