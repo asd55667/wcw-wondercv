@@ -1,7 +1,10 @@
-import { refreshRequest, request } from '@/plugins'
+import { request } from '@/plugins'
+import { rrequest } from './common'
 
-export const getLoginCode = param => request.post('/get-login-code', param)
+export const emailLoginCode = param => request.post('/login/email/code', param)
 
-export const authLogin = param => request.post('/login', param)
+export const emailLogin = param => request.post('/login/email', param)
 
-export const gitLogin = () => request.get('/github/login')
+export const gitLogin = () => request.get('/login/github')
+
+export const tokenLogin = () => rrequest('/login/token')

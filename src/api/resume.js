@@ -1,3 +1,3 @@
-import { rrquest } from './common'
+import { rrequest } from './common'
 
-export const authTest = () => rrquest('/auth')
+export const authTest = () => rrequest('/login/auth')

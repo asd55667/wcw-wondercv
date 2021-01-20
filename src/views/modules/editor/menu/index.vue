@@ -1,9 +1,9 @@
 <template>
   <div class="editor-menu">
     <div class="side-menu">
-      <MenuLeft :activeId="this.activeId"></MenuLeft>
+      <MenuLeft :activeId="activeId"></MenuLeft>
     </div>
-    <div class="side-content" :style="this.activeId === 0 ? 'width:544px' : ''">
+    <div class="side-content" :style="activeId === 0 ? 'width:544px' : ''">
       <component :is="componentId"></component>
     </div>
   </div>
@@ -18,6 +18,12 @@ import SideContent2 from './side-content/experience'
 import SideContent3 from './side-content/styleSetting'
 import SideContent4 from './side-content/moduleManage'
 
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 export default {
   components: {
     MenuLeft,
@@ -31,9 +37,7 @@ export default {
     componentId() {
       return 'side-content-' + this.activeId
     },
-    activeId() {
-      return this.$store.state.activeId
-    },
+    ...mapResumeState(['activeId']),
   },
 }
 </script>

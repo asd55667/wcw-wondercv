@@ -80,6 +80,13 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 export default {
   data() {
     return {
@@ -115,11 +122,12 @@ export default {
   },
   methods: {
     scanCV() {
-      this.$store.commit('scanning')
+      this.scanning()
       setTimeout(() => {
-        this.$store.commit('scanning')
+        this.scanning()
       }, 4000)
     },
+    ...mapResumeMutations(['scanning']),
   },
 }
 </script>

@@ -34,6 +34,11 @@
 <script>
 import Header from '@/layout/Header'
 
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+} from '@/store/helper/user'
+
 export default {
   components: {
     Header,
@@ -49,15 +54,18 @@ export default {
       isActive: 0,
     }
   },
-  created() {
-    const token = window.localStorage.getItem('access_token')
-    if (!token) this.middleNav.unshift({ entry: '我的简历', url: '/cvs', id: 1 })
+  mounted() {
+    // FIXME
+    if (this.isLogin)
+      this.middleNav.unshift({ entry: '我的简历', url: '/cvs', id: 1 })
   },
   methods: {
     switchTab(idx) {
-      // console.log(this.isActive, idx)
       this.isActive = idx
     },
+  },
+  computed: {
+    ...mapUserGetters(['isLogin']),
   },
 }
 </script>

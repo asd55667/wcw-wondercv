@@ -35,9 +35,9 @@ import { refreshRequest, request } from '@/plugins'
 //   }
 // }
 
-// export const rrquest = new RefreshRequest()
+// export const rrequest = new RefreshRequest()
 
-export async function rrquest() {
+export async function rrequest() {
   let i = 1
   async function func() {
     try {
@@ -46,7 +46,7 @@ export async function rrquest() {
       return res
     } catch (err) {
       try {
-        const res = await refreshRequest.get('refresh-token')
+        const res = await refreshRequest.get('/login/token/refresh')
         // console.log('refresh', res)
         window.localStorage.setItem('access_token', res.data.access_token)
       } catch (err) {

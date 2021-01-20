@@ -22,14 +22,19 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 export default {
   props: {
     editable: { type: Boolean, default: true },
   },
   methods: {
-    switchTab(idx) {
-      this.$store.commit('switchTab', idx)
-    },
+    ...mapResumeMutations(['switchTab']),
   },
 }
 </script>

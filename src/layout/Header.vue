@@ -16,7 +16,7 @@
             <div slot="hide" class="qcode">
               <div class="title">扫码下载App 同步编辑</div>
               <img
-                src="https://files.wondercv.com/appDownloadIcon.png"
+                :src="'https://files.wondercv.com/appDownloadIcon.png'"
                 alt=""
               />
             </div>
@@ -26,11 +26,7 @@
 
         <hide class="usr" v-if="isLogin">
           <div slot="content" class="usr-img" :top="100">
-            <img
-              class="usr-avatar"
-              src="https://photo.wondercv.com/uploads/user/avatar/2262447/b081a806-2f9c-4679-90a5-edcceb9bd386.jpeg"
-              alt=""
-            />
+            <img class="usr-avatar" :src="user.avatar_url" alt="" />
           </div>
           <div slot="hide" class="usr-menu">
             <div class="menu-title">
@@ -60,13 +56,22 @@
 
 <script>
 import Hide from '@/views/common/Hide'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMumapMutations,
+} from '@/store/helper/user'
+
+import { tokenLogin } from '@/api'
+
 export default {
   components: {
     Hide,
   },
   data() {
     return {
-      isLogin: false,
       menuItems: [
         {
           id: 1,
@@ -97,9 +102,15 @@ export default {
     }
   },
   created() {
-    const token = window.localStorage.getItem('access_token')
-    // if (token) this.isLogin = true
+    if (window.localStorage.getItem('access_token')) {
+      ;(async () => {
+        const res = await tokenLogin()
+        // console.log(res)
+        this.authlogin(res.data.user_info)
+      })()
+    }
   },
+
   methods: {
     login() {
       this.$router.push({ path: '/auth-signin', query: { type: 'login' } })
@@ -109,23 +120,34 @@ export default {
     },
     usrOption(e, i) {
       switch (i) {
+        // settings
         case 1:
           break
+        // vip
         case 2:
           break
+        // my order
         case 3:
           break
+        // feedback
         case 4:
           break
+        // logout
         case 5:
           ;(() => {
-            console.log(1)
+            console.log('logout')
             window.sessionStorage.removeItem('access_token')
             window.sessionStorage.removeItem('refresh_token')
+            this.logout()
           })()
           break
       }
     },
+    ...mapUserActions(['authlogin', 'logout']),
+  },
+  computed: {
+    ...mapUserGetters(['isLogin']),
+    ...mapUserState(['user']),
   },
 }
 </script>

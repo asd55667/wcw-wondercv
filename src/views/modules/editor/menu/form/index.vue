@@ -12,6 +12,13 @@ import ProjectForm from './ProjectForm'
 import EduForm from './EduForm'
 import CustomForm from './CustomForm'
 
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 export default {
   components: {
     BasicForm,
@@ -26,8 +33,9 @@ export default {
   },
   computed: {
     componentId() {
-      return this.$store.state.formTag + '-form'
+      return this.formTag + '-form'
     },
+    ...mapResumeState(['formTag']),
   },
 }
 </script>

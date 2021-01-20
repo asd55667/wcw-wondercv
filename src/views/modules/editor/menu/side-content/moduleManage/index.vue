@@ -54,6 +54,20 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
+
 export default {
   data() {
     return {
@@ -87,26 +101,24 @@ export default {
     },
     dragend() {
       const imported = this.modules.map(v => v.id)
-      this.$store.commit('resetModules', imported)
+      this.resetModules(imported)
     },
     deleteModule(item) {
       const idx = this.modules.indexOf(item)
       this.modules.splice(idx, 1)
-      this.$store.commit('delModuleItem', idx)
-      this.$store.commit('changeRefState', item.id)
+      this.delModuleItem(idx)
+      this.changeRefState(item.id)
     },
     addModule(tag) {
-      this.$store.commit('switchFormTag', tag)
-      this.$store.commit('switchTab', 0)
+      this.switchFormTag(tag)
+      this.switchTab(0)
     },
+    ...mapUserMutations(['resetModules', 'delModuleItem']),
+    ...mapResumeMutations(['switchFormTag', 'switchTab']),
   },
   computed: {
-    remains() {
-      return this.$store.state.remains
-    },
-    importedModules() {
-      return this.$store.getters.modules
-    },
+    ...mapUserState(['remains']),
+    ...mapUserGetters(['importedModules']),
   },
 }
 </script>

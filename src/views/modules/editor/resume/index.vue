@@ -11,11 +11,11 @@
         :style="`display:${isScanning ? 'block' : 'none'} ;`"
       ></div>
       <div class="cv">
-        <div @click="switchFormTag('basic')">
+        <div @click="switchForm('basic')">
           <basic-view></basic-view>
         </div>
-        <div class="resume-view" v-for="item in modules" :key="item.id">
-          <div @click="switchFormTag(item.tag)">
+        <div class="resume-view" v-for="item in importedModules" :key="item.id">
+          <div @click="switchForm(item.tag)">
             <base-view :resumeModule="item"></base-view>
           </div>
         </div>
@@ -34,6 +34,20 @@
 <script>
 import BaseView from './BaseView'
 import BasicView from './BasicView'
+
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
 
 const a4Width = 793
 
@@ -97,28 +111,22 @@ export default {
 
   created() {},
   computed: {
-    modules() {
-      return this.$store.getters.modules
-    },
-    activeId() {
-      return this.$store.state.activeId
-    },
-    isScanning() {
-      return this.$store.state.isScanning
-    },
+    ...mapResumeState(['isScanning', 'activeId']),
+    ...mapUserState(['remains']),
+    ...mapUserGetters(['importedModules']),
   },
 
   methods: {
     componentId(id) {
-      for (const m of this.$store.state.remains) {
+      for (const m of this.remains) {
         if (id === m.id) {
           return m.tag + '-view'
         }
       }
     },
-    switchFormTag(tag) {
-      this.$store.commit('switchFormTag', tag)
-      this.$store.commit('switchTab', 0)
+    switchForm(tag) {
+      this.switchFormTag(tag)
+      this.switchTab(0)
       setTimeout(() => {
         this.resumeWidth = this.$el.clientWidth
       }, 300)
@@ -127,6 +135,7 @@ export default {
     onePageFmt() {
       console.log('one page fmt')
     },
+    ...mapResumeMutations(['switchFormTag', 'switchTab']),
   },
 }
 </script>

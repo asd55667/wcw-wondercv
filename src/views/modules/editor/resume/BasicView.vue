@@ -41,14 +41,29 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
+
 export default {
   data() {
     return { hasAvatar: false }
   },
   computed: {
     basic() {
-      return this.$store.state.info.basic
+      return this.info.basic
     },
+    ...mapUserState(['info']),
   },
   methods: {
     delImg() {

@@ -126,8 +126,14 @@
 </template>
 
 <script>
-import { authTest, getLoginCode, authLogin, gitLogin } from '@/api'
-import { refreshRequest, request } from '@/plugins'
+import { authTest, emailLoginCode, emailLogin, gitLogin } from '@/api'
+// import { refreshRequest, request } from '@/plugins'
+
+import {
+  mapActions as mapUserActions,
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+} from '@/store/helper/user'
 
 export default {
   data() {
@@ -216,7 +222,7 @@ export default {
       // get login code
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await getLoginCode({
+        const res = await emailLoginCode({
           email: this.loginForm.email,
         })
         if (res.status !== 200)
@@ -243,22 +249,25 @@ export default {
     async loginWithEmail() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await authLogin(this.loginForm)
-        console.log(res)
+        const res = await emailLogin(this.loginForm)
+        // console.log(res)
         if (res.status !== 200) return this.$message.error(`登录失败`)
         if (res.data.code === -1) {
           this.$message.warning(`${res.data.msg}`)
         } else {
           this.$message.success(`登录成功`)
+
+          this.authlogin(res.data.user_info)
           window.localStorage.setItem('access_token', res.data.access_token)
           window.localStorage.setItem('refresh_token', res.data.refresh_token)
+          this.$router.go(-1)
         }
       })
     },
 
     // github oauth2 login
     async oauth2() {
-      window.open('http://localhost:8081/github', '_blank')
+      window.open('http://localhost:8081/login/github/token', '_blank')
       // window.open('/github', '_blank')
       const ticker = setInterval(async () => {
         console.log('Auth...')
@@ -276,10 +285,11 @@ export default {
       // const res = await refreshRequest('github/login')
       console.log('test ', res)
     },
+    ...mapUserActions(['authlogin']),
   },
   created() {
     this.reloadQRcode()
-    // this.test()
+    this.test()
   },
 }
 </script>

@@ -4,24 +4,19 @@
       <img
         class="bkgd pa"
         src="https://files.wondercv.com/cv-sidebar/sidebar-select-bgimg.png"
-        :style="
-          `transform: translateY(${($store.state.activeId - 1) * 134}px);`
-        "
+        :style="`transform: translateY(${(activeId - 1) * 117}px);`"
       />
       <div
         :class="[
           'tab-item pr',
-          $store.state.activeId === item.id ? 'selected' : 'not-selected',
+          activeId === item.id ? 'selected' : 'not-selected',
         ]"
         v-for="item in tabBar"
         :key="item.id"
         @click="switchTab(item.id)"
       >
         <div class="tab-img">
-          <img
-            :src="$store.state.activeId === item.id ? item.selected : item.icon"
-            alt=""
-          />
+          <img :src="activeId === item.id ? item.selected : item.icon" alt="" />
         </div>
         <div class="txt">{{ item.name }}</div>
       </div>
@@ -30,6 +25,12 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+} from '@/store/helper/resume'
+
 export default {
   data() {
     return {
@@ -63,11 +64,10 @@ export default {
     }
   },
   methods: {
-    switchTab(id) {
-      // console.log(this.activeId)
-      this.$store.commit('switchTab', id)
-      // console.log(this.activeId)
-    },
+    ...mapResumeMutations(['switchTab']),
+  },
+  computed: {
+    ...mapResumeState(['activeId']),
   },
 }
 </script>
