@@ -16,41 +16,45 @@
               <el-input v-model="staticValidateForm.email"></el-input>
             </el-form-item>
           </div>
-          <el-form-item prop="location" label="现居城市">
-            <el-input v-model="staticValidateForm.location"></el-input>
+          <el-form-item prop="city" label="现居城市">
+            <el-input v-model="staticValidateForm.city"></el-input>
           </el-form-item>
         </el-form>
         <!-- 动态表单 -->
-        <el-form :model="dynamicValidateForm" ref="dynamicValidateForm">
+        <el-form :model="dynamicValidateForm" ref="dynamicValidateFormRef">
           <div class="form-wrap">
             <el-form-item
-              v-for="(attr, index) in dynamicValidateForm.attr"
-              :label="attr.name"
-              :key="attr.key"
-              :prop="'attr.' + index + '.value'"
+              v-for="attr in Object.keys(dynamicValidateForm)"
+              :label="dynamicValidateForm[attr].desc"
+              :key="dynamicValidateForm[attr].desc"
+              :prop="attr"
               class="item"
             >
               <el-input
-                v-model="attr.value"
-                :placeholder="attr.placeholder"
+                v-model="dynamicValidateForm[attr].value"
+                :placeholder="dynamicValidateForm[attr].placeholder"
               ></el-input>
             </el-form-item>
           </div>
         </el-form>
         <!-- 动态属性标签 -->
-        <div class="tag-group" v-for="(group, i) in groups" :key="group.gname">
-          <div class="gname" v-if="group.tags.length">
+        <div
+          class="tag-group"
+          v-for="(group, i) in tagGroups.arr"
+          :key="group.gname"
+        >
+          <div class="gname" v-if="Object.keys(group.tags).length">
             {{ group.gname }}
           </div>
           <div class="tags">
             <div
               class="tag"
-              v-for="(tag, j) in group.tags"
-              :key="tag.name"
+              v-for="(tag, j) in Object.keys(group.tags)"
+              :key="group.tags[tag].desc"
               @click="addAttr(tag, i, j)"
             >
               <b>+</b>
-              <span>{{ tag.name }}</span>
+              <span>{{ group.tags[tag].desc }}</span>
             </div>
           </div>
         </div>
@@ -62,52 +66,18 @@
 
 <script>
 import BaseForm from './BaseForm'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
+
 export default {
   components: { BaseForm },
   data() {
-    return {
-      dynamicValidateForm: {
-        attr: [
-          {
-            key: Date.now(),
-            name: '个人网站',
-            value: 'wuchengwei.icu',
-            placeholder: '如：github.com/wondercv.com',
-          },
-        ],
-      },
-      staticValidateForm: {
-        name: '吴承炜',
-        phone: '18120587177',
-        email: '344078971@qq.com',
-        location: '上海',
-      },
-      groups: [
-        {
-          gname: '社交信息',
-          tags: [
-            { name: '微信', placeholder: '请填写' },
-            { name: 'LinkedIn', placeholder: '请填写领英账号' },
-          ],
-        },
-        {
-          gname: '其他信息',
-          tags: [
-            { name: '年龄或生日', placeholder: '请填写' },
-            { name: '性别', placeholder: '请填写' },
-            { name: '身高', placeholder: '请填写' },
-            { name: '体重', placeholder: '请填写' },
-            { name: '民族', placeholder: '请填写' },
-            { name: '籍贯', placeholder: '请填写' },
-            { name: '政治面貌', placeholder: '请填写' },
-            { name: '婚姻状况', placeholder: '请填写' },
-            { name: '求职意向', placeholder: '请填写' },
-            { name: '当前工作状态', placeholder: '请填写' },
-            { name: '期望薪资', placeholder: '请填写' },
-          ],
-        },
-      ],
-    }
+    return {}
   },
   methods: {
     submitForm(formName) {
@@ -130,10 +100,58 @@ export default {
       }
     },
     addAttr(tag, i, j) {
-      tag.key = Date.now()
-      this.dynamicValidateForm.attr.push(tag)
-      this.groups[i].tags.splice(j, 1)
+      // this.dynamicValidateForm.attr.push(tag)
+      // this.groups[i].tags.splice(j, 1)
+      if (i === 0) {
+        // console.log(this.info.basic.social, tag)
+        this.info.basic.social[tag].value = ''
+      } else if (i === 1) {
+        if (tag in this.info.basic.other) this.info.basic.other[tag].value = ''
+        else this.info.basic.intension[tag].value = ''
+      }
     },
+  },
+  computed: {
+    ...mapUserState(['info']),
+    ...mapUserGetters(['socialTags', 'otherTags']),
+    staticValidateForm() {
+      return {
+        name: this.info.basic.name,
+        phone: this.info.basic.contact.telephone.value,
+        email: this.info.basic.contact.email.value,
+        city: this.info.basic.contact.city.value,
+      }
+    },
+    dynamicValidateForm() {
+      const tags = {}
+      Object.assign(tags, this.socialTags.tags)
+      Object.assign(tags, this.otherTags.tags)
+      return tags
+      return {
+        website: {
+          desc: '个人网站',
+          value: '123',
+          placeholder: '如：github.com/wondercv.com',
+        },
+      }
+    },
+    tagGroups() {
+      return {
+        arr: [
+          {
+            gname: '社交信息',
+            tags: this.socialTags.emptyTags,
+          },
+          {
+            gname: '其他信息',
+            tags: this.otherTags.emptyTags,
+          },
+        ],
+      }
+    },
+  },
+  created() {
+    // console.log(this.otherTags)
   },
 }
 </script>

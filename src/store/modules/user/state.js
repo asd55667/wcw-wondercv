@@ -127,20 +127,57 @@ export default {
   info: {
     basic: {
       name: '吴承炜',
-      contact: [
-        { name: '电话', value: '18120587177' },
-        { name: '邮箱', value: '344078971@qq.com' },
-        { name: '现居城市', value: '上海' },
-      ],
-      social: [{ name: '个人站点', value: 'wuchengwei.icu' }],
-      other: [
-        // { name: '', value: '' },
-      ],
-      intension: [
-        // { name: '求职意向', value: '' },
-        // { name: '当前工作状态', value: '' },
-        // { name: '期望薪资', value: '' },
-      ],
+      contact: {
+        telephone: { desc: '电话', value: '18120587177' },
+        email: { desc: '邮箱', value: '344078971@qq.com' },
+        city: { desc: '现居城市', value: '上海' },
+      },
+      social: {
+        website: {
+          desc: '个人网站',
+          value: 'wuchengwei.icu',
+          placeholder: '如：github.com/wondercv.com',
+        },
+        linkin: {
+          desc: 'LinkedIn',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+        wechat: {
+          desc: 'wexin',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+      },
+      other: {
+        age: {
+          desc: '年龄或生日',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+        sex: {
+          desc: '性别',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+      },
+      intension: {
+        workIntension: {
+          desc: '求职意向',
+          value: 'web',
+          placeholder: '如：github.com/wondercv.com',
+        },
+        currentJob: {
+          desc: '当前工作状态',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+        expectSalary: {
+          desc: '期望薪资',
+          value: null,
+          placeholder: '如：github.com/wondercv.com',
+        },
+      },
     },
     skill: [
       {

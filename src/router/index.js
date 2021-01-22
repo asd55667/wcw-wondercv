@@ -9,7 +9,7 @@ const HelloWorld = () =>
 const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login')
 
 const Editor = () =>
-  import(/* webpackChunkName: "Editor" */ '@/views/modules/editor')
+  import(/* webpackChunkName: "Editor" */ '@/views/editor')
 
 Vue.use(VueRouter)
 

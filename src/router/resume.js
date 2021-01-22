@@ -1,10 +1,12 @@
-const CV = () => import(/* webpackChunkName: "cvs" */ '@/views/modules/home/cvs')
-const MyCV = () => import(/* webpackChunkName: "cvsMyCV" */ '@/views/modules/home/cvs/mycv')
-const Trash = () => import(/* webpackChunkName: "cvsTrash" */ '@/views/modules/home/cvs/trash')
+const CV = () => import(/* webpackChunkName: "cvs" */ '@/views/home/cvs')
+const MyCV = () =>
+  import(/* webpackChunkName: "cvsMyCV" */ '@/views/home/cvs/mycv')
+const Trash = () =>
+  import(/* webpackChunkName: "cvsTrash" */ '@/views/home/cvs/trash')
 const Favorite = () =>
-  import(/* webpackChunkName: "cvsFavorite" */ '@/views/modules/home/cvs/favorite')
+  import(/* webpackChunkName: "cvsFavorite" */ '@/views/home/cvs/favorite')
 const HRInvite = () =>
-  import(/* webpackChunkName: "cvsHRInvite" */ '@/views/modules/home/cvs/hrInvite')
+  import(/* webpackChunkName: "cvsHRInvite" */ '@/views/home/cvs/hrInvite')
 
 export const cvRoutes = {
   path: '/cvs',

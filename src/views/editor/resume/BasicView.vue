@@ -4,20 +4,41 @@
       <div class="info pa">
         <div class="name basic">{{ basic.name }}</div>
         <div class="basic">
-          <div class="item" v-for="item in basic.contact" :key="item.name">
-            <span>{{ item.value }}</span>
+          <div
+            class="item"
+            v-for="item in Object.keys(basic.contact)"
+            :key="item"
+          >
+            <span>{{ basic.contact[item].value }}</span>
           </div>
         </div>
 
         <div class=" basic">
-          <div class="item" v-for="item in basic.social" :key="item.name">
-            <span>{{ item.name + ': ' + item.value }}</span>
+          <div
+            class="item"
+            v-for="item in Object.keys(socialTags.views)"
+            :key="item"
+          >
+            <!-- <div class="item"></div> -->
+            <span>
+              {{
+                socialTags.views[item].desc +
+                  ': ' +
+                  socialTags.views[item].value
+              }}</span
+            >
           </div>
         </div>
 
         <div class=" basic">
-          <div class="item" v-for="item in basic.other" :key="item.name">
-            <span>{{ item.name + ': ' + item.value }}</span>
+          <div
+            class="item"
+            v-for="item in Object.keys(otherTags.views)"
+            :key="item"
+          >
+            <span>{{
+              otherTags.tags[item].desc + ': ' + otherTags.tags[item].value
+            }}</span>
           </div>
         </div>
       </div>
@@ -64,6 +85,7 @@ export default {
       return this.info.basic
     },
     ...mapUserState(['info']),
+    ...mapUserGetters(['socialTags', 'otherTags']),
   },
   methods: {
     delImg() {

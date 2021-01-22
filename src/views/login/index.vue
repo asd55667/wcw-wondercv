@@ -398,7 +398,6 @@ export default {
     }
     i {
       font-family: element-icons !important;
-      speak: none;
       font-style: normal;
       font-weight: 400;
       font-variant: normal;
