@@ -7,4 +7,4 @@ export const emailLogin = param => request.post('/login/email', param)
 
 export const gitLogin = () => request.get('/login/github')
 
-export const tokenLogin = () => rrequest('/login/token')
+export const tokenLogin = () => rrequest.get('/login/token')

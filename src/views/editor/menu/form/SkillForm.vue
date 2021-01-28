@@ -1,23 +1,60 @@
 <template>
   <div class="skill-form">
-    <base-form>
-      <div slot="head-name" class="head-name">专业技能</div>
-      <div slot="form-content">
-        <quill-editor v-model="skill"></quill-editor>
-      </div>
+    <base-form @submit="submitForm">
+      <template #head-name> 专业技能</template>
+      <template #form-content>
+        <quill-editor v-model="skill.desc"></quill-editor>
+      </template>
     </base-form>
   </div>
 </template>
 
 <script>
 import BaseForm from './BaseForm'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
+
+import { createSkill, updateSkill, getSkill } from '@/api'
+
 export default {
   components: { BaseForm },
   data() {
-    return {
-      skill:
-        '<p>1, 语言</p><p>擅长python，熟悉js，c/c++， 了解java， cuda</p><p>了解常见的设计模式，数据结构，掌握基本的网络编程，数据分析/处理，爬虫</p><p>&nbsp;2.框架</p><p>了解 vue 状态管理 路由 SSR，了解 koa 洋葱模型 cluster多线程</p><p>&nbsp;3. 工具</p><p>熟悉字符界面 vim tmux，熟悉 git版本控制，熟悉 shell 终端常用命令</p>',
-    }
+    return {}
+  },
+  computed: {
+    ...mapUserState(['info']),
+    skill() {
+      const skill = this.info.skill.filter(item => item.ref)
+      return skill ? skill[0] : ''
+    },
+  },
+  methods: {
+    async submitForm() {
+      let res
+
+      if (this.info.skill.length == 1) {
+        const uid = window.localStorage.getItem('uid')
+        // console.log(this.info.skill);
+        res = await updateSkill(uid, this.info.skill)
+        // res = await getSkill(uid)
+      } else {
+        const skill = {
+          ref: true,
+          desc: this.skill,
+          update: new Date(),
+        }
+        this.info.skill.push(skill)
+        res = await createSkill(this.info.skill)
+      }
+    },
+  },
+  created() {
+    console.log(this.info.skill.length)
   },
 }
 </script>

@@ -10,5 +10,8 @@ export default {
     commit('setUser', {})
     commit('info', {})
     commit('imported', [])
+    window.localStorage.removeItem('access_token')
+    window.localStorage.removeItem('refresh_token')
+    window.localStorage.removeItem('uid')
   },
 }

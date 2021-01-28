@@ -18,6 +18,7 @@
           class="items pr"
           v-for="(item, i) in resumeModule.content"
           :key="i"
+          @click="contentIdx(i)"
         >
           <!-- 上下移动按钮 -->
           <div v-if="item.ref">
@@ -37,18 +38,24 @@
             </div>
 
             <div class="first-row">
-              <div class="item-name">{{ item.name }}</div>
+              <div v-if="item.name" class="item-name">
+                {{ item.name.value }}
+              </div>
               <div class="timespan">
-                <span v-for="time in item.timespan" :key="time">{{
+                <span v-for="(time, name) in item.timespan" :key="name">{{
                   time
                 }}</span>
               </div>
             </div>
             <div class="second-row">
-              <div class="attrs">
-                <span v-for="attr in item.attrs" :key="attr">{{ attr }}</span>
+              <div class="attrs" v-if="item.attrs">
+                <span v-for="attr in item.attrs" :key="attr.desc">{{
+                  attr.value
+                }}</span>
               </div>
-              <div class="location">{{ item.location }}</div>
+              <div class="location" v-if="item.location">
+                {{ item.location.value }}
+              </div>
             </div>
             <div class="desc" v-html="item.desc"></div>
           </div>
@@ -89,6 +96,9 @@ export default {
       if (i !== this.content.length - 1) {
         this.swap(i, i + 1)
       }
+    },
+    contentIdx(i) {
+      this.$emit('formIdx', i)
     },
   },
 }

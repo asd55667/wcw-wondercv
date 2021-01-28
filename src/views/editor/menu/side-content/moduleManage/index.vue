@@ -34,9 +34,8 @@
         <div class="module">
           <div
             class="item"
-            v-for="item in remains"
+            v-for="item in unimportedModules"
             :key="item.id"
-            :style="item.ref && item.id !== 11 ? 'display:none;' : ''"
             @click="addModule(item.tag)"
           >
             <div class="info">
@@ -113,12 +112,12 @@ export default {
       this.switchFormTag(tag)
       this.switchTab(0)
     },
-    ...mapUserMutations(['resetModules', 'delModuleItem']),
+    ...mapUserMutations(['resetModules', 'delModuleItem', 'changeRefState']),
     ...mapResumeMutations(['switchFormTag', 'switchTab']),
   },
   computed: {
     ...mapUserState(['remains']),
-    ...mapUserGetters(['importedModules']),
+    ...mapUserGetters(['importedModules', 'unimportedModules']),
   },
 }
 </script>

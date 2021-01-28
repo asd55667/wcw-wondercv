@@ -10,7 +10,7 @@
           <slot name="head-name" class="name">表单名</slot>
           <i v-if="editable" class="el-icon-edit"></i>
         </div>
-        <div class="save">保存</div>
+        <div class="save" @click="submitForm">保存</div>
       </div>
       <div class="form-content pr">
         <slot name="form-content">
@@ -31,10 +31,14 @@ import {
 
 export default {
   props: {
+    // custom module name
     editable: { type: Boolean, default: true },
   },
   methods: {
     ...mapResumeMutations(['switchTab']),
+    submitForm() {
+      this.$emit('submit')
+    },
   },
 }
 </script>

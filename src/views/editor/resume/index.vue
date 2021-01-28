@@ -11,12 +11,16 @@
         :style="`display:${isScanning ? 'block' : 'none'} ;`"
       ></div>
       <div class="cv">
-        <div @click="switchForm('basic')">
+        <div @click="switchForm('basic', 0)">
           <basic-view></basic-view>
         </div>
         <div class="resume-view" v-for="item in importedModules" :key="item.id">
-          <div @click="switchForm(item.tag)">
-            <base-view :resumeModule="item"></base-view>
+          <!-- <div @click="switchForm(item.tag)"> -->
+          <div>
+            <base-view
+              :resumeModule="item"
+              @formIdx="switchForm(item.tag, $event)"
+            ></base-view>
           </div>
         </div>
       </div>
@@ -124,8 +128,9 @@ export default {
         }
       }
     },
-    switchForm(tag) {
+    switchForm(tag, i) {
       this.switchFormTag(tag)
+      this.switchFormIdx(i)
       this.switchTab(0)
       setTimeout(() => {
         this.resumeWidth = this.$el.clientWidth
@@ -135,7 +140,7 @@ export default {
     onePageFmt() {
       console.log('one page fmt')
     },
-    ...mapResumeMutations(['switchFormTag', 'switchTab']),
+    ...mapResumeMutations(['switchFormTag', 'switchFormIdx', 'switchTab']),
   },
 }
 </script>

@@ -7,6 +7,10 @@ export default {
     state.formTag = tag
   },
 
+  switchFormIdx(state, Idx) {
+    state.formIdx = Idx
+  },
+
   scanning(state) {
     state.isScanning = !state.isScanning
   },

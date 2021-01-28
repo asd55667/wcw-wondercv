@@ -13,6 +13,10 @@ export const importedModules = (state, getters) => {
   // return state.imported.map(idx => state.remains[idx - 1])
 }
 
+export const unimportedModules = state => {
+  return state.remains.filter(v => !state.imported.includes(v.id))
+}
+
 export const socialTags = state => {
   const { social } = state.info.basic
   return filterTags(social)

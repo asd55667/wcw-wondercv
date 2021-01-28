@@ -2,43 +2,22 @@
   <div class="basic-info pr">
     <div class="title pr">
       <div class="info pa">
-        <div class="name basic">{{ basic.name }}</div>
+        <div class="name basic">{{ basic.user.name.value}}</div>
         <div class="basic">
-          <div
-            class="item"
-            v-for="item in Object.keys(basic.contact)"
-            :key="item"
-          >
-            <span>{{ basic.contact[item].value }}</span>
+          <div class="item" v-for="(item, prop) in basic.contact" :key="prop">
+            <span>{{ item.value }}</span>
           </div>
         </div>
 
         <div class=" basic">
-          <div
-            class="item"
-            v-for="item in Object.keys(socialTags.views)"
-            :key="item"
-          >
-            <!-- <div class="item"></div> -->
-            <span>
-              {{
-                socialTags.views[item].desc +
-                  ': ' +
-                  socialTags.views[item].value
-              }}</span
-            >
+          <div class="item" v-for="item in socialTags.views" :key="item.desc">
+            <span>{{ item.desc + ': ' + item.value }}</span>
           </div>
         </div>
 
         <div class=" basic">
-          <div
-            class="item"
-            v-for="item in Object.keys(otherTags.views)"
-            :key="item"
-          >
-            <span>{{
-              otherTags.tags[item].desc + ': ' + otherTags.tags[item].value
-            }}</span>
+          <div class="item" v-for="item in otherTags.views" :key="item.desc">
+            <span>{{ item.desc + ': ' + item.value }}</span>
           </div>
         </div>
       </div>
@@ -91,6 +70,9 @@ export default {
     delImg() {
       this.hasAvatar = false
     },
+  },
+  created() {
+    // console.log(this.socialTags)
   },
 }
 </script>

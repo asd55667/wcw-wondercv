@@ -19,6 +19,7 @@ const config = {
   // withCredentials: true, // Check cross-site Access-Control
 }
 
+// with Loading
 export const request = axiosFactory(
   config,
   reqInterceptorFactory('access_token'),
@@ -27,7 +28,6 @@ export const request = axiosFactory(
   errInterceptor,
 )
 
-// with Loading
 export const refreshRequest = axiosFactory(
   config,
   reqInterceptorFactory('refresh_token'),
@@ -54,7 +54,7 @@ function reqInterceptorFactory(local) {
     if (local === 'access_token') NProgress.start()
     const token = window.localStorage.getItem(local)
     if (token) config.headers.common['Authorization'] = 'Bearer ' + token
-    config.headers['wcw-key'] = 123
+    // config.headers['wcw-key'] = 123
     return config
   }
 }

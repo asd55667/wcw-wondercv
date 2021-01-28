@@ -148,7 +148,7 @@ export default {
       switchTxt: ['简历', '招聘'],
 
       // the way of login
-      isWxLogin: true,
+      isWxLogin: false,
       toggers: [
         {
           img_src:
@@ -173,7 +173,7 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
-        valCode: '868A',
+        valCode: '2983',
       },
       loginFormRules: {
         email: [
@@ -260,6 +260,7 @@ export default {
           this.authlogin(res.data.user_info)
           window.localStorage.setItem('access_token', res.data.access_token)
           window.localStorage.setItem('refresh_token', res.data.refresh_token)
+          window.localStorage.setItem('uid', res.data.uid)
           this.$router.go(-1)
         }
       })
@@ -279,17 +280,10 @@ export default {
       }, 1000)
     },
 
-    async test() {
-      const a = 1
-      const res = await authTest()
-      // const res = await refreshRequest('github/login')
-      console.log('test ', res)
-    },
     ...mapUserActions(['authlogin']),
   },
   created() {
     this.reloadQRcode()
-    this.test()
   },
 }
 </script>

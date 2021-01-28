@@ -13,7 +13,7 @@
           <router-link
             :to="item.url"
             :class="['middle-item', isActive === item.id ? 'active' : '']"
-            v-for="item in middleNav"
+            v-for="item in _middleNav"
             :key="item.id"
             @click.native="switchTab(item.id)"
           >
@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       middleNav: [
+        { entry: '我的简历', url: '/cvs', id: 1 },
         { entry: '简历模版', url: '/template', id: 2 },
         { entry: '简历修改', url: '/service', id: 3 },
         { entry: '热门职位', url: '/jobs', id: 4 },
@@ -54,11 +55,7 @@ export default {
       isActive: 0,
     }
   },
-  mounted() {
-    // FIXME
-    if (this.isLogin)
-      this.middleNav.unshift({ entry: '我的简历', url: '/cvs', id: 1 })
-  },
+
   methods: {
     switchTab(idx) {
       this.isActive = idx
@@ -66,6 +63,13 @@ export default {
   },
   computed: {
     ...mapUserGetters(['isLogin']),
+    _middleNav() {
+      if (this.isLogin) {
+        return this.middleNav
+      } else {
+        return this.middleNav.filter(v => v.id != 1)
+      }
+    },
   },
 }
 </script>

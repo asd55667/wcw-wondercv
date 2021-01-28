@@ -11,6 +11,7 @@ export default {
     state.info = info
   },
 
+  // module manage
   appendModuleItem(state) {},
 
   delModuleItem(state, idx) {

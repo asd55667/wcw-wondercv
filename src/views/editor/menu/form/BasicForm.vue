@@ -1,38 +1,47 @@
 <template>
   <div class="basic-form pr">
-    <base-form :editable="false">
-      <div slot="head-name">基本信息</div>
-      <div slot="form-content">
+    <base-form :editable="false" @submit="submitForm">
+      <template #head-name>
+        基本信息
+      </template>
+      <template #form-content>
         <!-- 静态表单 -->
-        <el-form :model="staticValidateForm">
-          <el-form-item prop="name" label="姓名">
-            <el-input v-model="staticValidateForm.name"></el-input>
+        <el-form :model="basicForm.static" ref="basicForm">
+          <el-form-item
+            prop="name"
+            label="姓名"
+            :rules="{ required: true, message: '请输入邮箱地址', trigger: 'blur' },"
+          >
+            <el-input v-model="basicForm.static.name.value"></el-input>
           </el-form-item>
           <div class="form-wrap">
             <el-form-item class="item" prop="phone" label="电话">
-              <el-input v-model="staticValidateForm.phone"></el-input>
+              <el-input v-model="basicForm.static.telephone.value"></el-input>
             </el-form-item>
-            <el-form-item class="item" prop="email" label="邮箱">
-              <el-input v-model="staticValidateForm.email"></el-input>
+            <el-form-item
+              class="item"
+              prop="email"
+              :label="basicForm.static.email.desc"
+            >
+              <el-input v-model="basicForm.static.email.value"></el-input>
             </el-form-item>
           </div>
-          <el-form-item prop="city" label="现居城市">
-            <el-input v-model="staticValidateForm.city"></el-input>
+          <el-form-item prop="city" :label="basicForm.static.city.desc">
+            <el-input v-model="basicForm.static.city.value"></el-input>
           </el-form-item>
-        </el-form>
-        <!-- 动态表单 -->
-        <el-form :model="dynamicValidateForm" ref="dynamicValidateFormRef">
+
+          <!-- 动态表单 -->
           <div class="form-wrap">
             <el-form-item
-              v-for="attr in Object.keys(dynamicValidateForm)"
-              :label="dynamicValidateForm[attr].desc"
-              :key="dynamicValidateForm[attr].desc"
-              :prop="attr"
+              v-for="(attr, name) in basicForm.dynamic"
+              :label="attr.desc"
+              :key="attr.desc"
+              :prop="name"
               class="item"
             >
               <el-input
-                v-model="dynamicValidateForm[attr].value"
-                :placeholder="dynamicValidateForm[attr].placeholder"
+                v-model="attr.value"
+                :placeholder="attr.placeholder"
               ></el-input>
             </el-form-item>
           </div>
@@ -49,17 +58,16 @@
           <div class="tags">
             <div
               class="tag"
-              v-for="(tag, j) in Object.keys(group.tags)"
-              :key="group.tags[tag].desc"
-              @click="addAttr(tag, i, j)"
+              v-for="(tag, name) in group.tags"
+              :key="tag.desc"
+              @click="addAttr(name, i)"
             >
               <b>+</b>
-              <span>{{ group.tags[tag].desc }}</span>
+              <span>{{ tag.desc }}</span>
             </div>
           </div>
         </div>
-        <!-- <div v-for="i in 100" :key="i"><div>100</div></div> -->
-      </div>
+      </template>
     </base-form>
   </div>
 </template>
@@ -74,18 +82,28 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import { createBasic, updateBasic } from '@/api'
+
 export default {
   components: { BaseForm },
   data() {
     return {}
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+    submitForm() {
+      this.$refs['basicForm'].validate(async valid => {
         if (valid) {
-          alert('submit!')
+          const form = Object.assign({}, this.info.basic)
+          let res
+          if (this.info.basic.user.name.value) {
+            const uid = window.localStorage.getItem('uid')
+            res = await updateBasic(uid, form)
+          } else {
+            res = await createBasic(form)
+          }
+          console.log(res)
         } else {
-          console.log('error submit!!')
+          alert('fmt error!')
           return false
         }
       })
@@ -99,11 +117,10 @@ export default {
         this.dynamicValidateForm.attr.splice(index, 1)
       }
     },
-    addAttr(tag, i, j) {
+    addAttr(tag, i) {
       // this.dynamicValidateForm.attr.push(tag)
       // this.groups[i].tags.splice(j, 1)
       if (i === 0) {
-        // console.log(this.info.basic.social, tag)
         this.info.basic.social[tag].value = ''
       } else if (i === 1) {
         if (tag in this.info.basic.other) this.info.basic.other[tag].value = ''
@@ -115,24 +132,19 @@ export default {
     ...mapUserState(['info']),
     ...mapUserGetters(['socialTags', 'otherTags']),
     staticValidateForm() {
-      return {
-        name: this.info.basic.name,
-        phone: this.info.basic.contact.telephone.value,
-        email: this.info.basic.contact.email.value,
-        city: this.info.basic.contact.city.value,
-      }
+      const form = {}
+      Object.assign(form, this.info.basic.contact, this.info.basic.user)
+      return form
     },
     dynamicValidateForm() {
       const tags = {}
-      Object.assign(tags, this.socialTags.tags)
-      Object.assign(tags, this.otherTags.tags)
+      Object.assign(tags, this.socialTags.tags, this.otherTags.tags)
       return tags
+    },
+    basicForm() {
       return {
-        website: {
-          desc: '个人网站',
-          value: '123',
-          placeholder: '如：github.com/wondercv.com',
-        },
+        static: this.staticValidateForm,
+        dynamic: this.dynamicValidateForm,
       }
     },
     tagGroups() {
@@ -149,9 +161,6 @@ export default {
         ],
       }
     },
-  },
-  created() {
-    // console.log(this.otherTags)
   },
 }
 </script>
