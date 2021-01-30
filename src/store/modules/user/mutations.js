@@ -22,11 +22,24 @@ export default {
     state.imported = imported
   },
 
-  changeRefState(state, id) {
-    state.remains.forEach(v => {
-      if (id === v.id) {
-        v.ref = false
-      }
-    })
+  changeRefState(state, payload) {
+    const { tag, idx } = payload
+    state.info[tag][idx].ref = !state.info[tag][idx].ref
+  },
+
+  manageExperience(state, payload) {
+    const { tag, content } = payload
+    state.info[tag] = content
+  },
+
+  createExperience(state, payload) {
+    const { tag, item } = payload
+    state.info[tag].push(item)
+  },
+
+  updateExperience(state, payload) {
+    const { tag, item } = payload
+    const idx = state.info[tag].indexOf(item)
+    state.info[tag][idx].update = new Date()
   },
 }

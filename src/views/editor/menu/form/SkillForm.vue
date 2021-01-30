@@ -19,7 +19,15 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 import { createSkill, updateSkill, getSkill } from '@/api'
+import { deepCopy } from '@/utils'
 
 export default {
   components: { BaseForm },
@@ -28,33 +36,35 @@ export default {
   },
   computed: {
     ...mapUserState(['info']),
+    ...mapResumeState(['isNewForm', 'emptyInfo']),
     skill() {
-      const skill = this.info.skill.filter(item => item.ref)
-      return skill ? skill[0] : ''
+      if (this.isNewForm) {
+        return this.emptyInfo.skill
+      } else {
+        const skill = this.info.skill.filter(item => item.ref)
+        return skill.length === 1 ? skill[0] : {}
+      }
     },
   },
   methods: {
     async submitForm() {
       let res
-
-      if (this.info.skill.length == 1) {
-        const uid = window.localStorage.getItem('uid')
-        // console.log(this.info.skill);
-        res = await updateSkill(uid, this.info.skill)
-        // res = await getSkill(uid)
-      } else {
-        const skill = {
-          ref: true,
-          desc: this.skill,
-          update: new Date(),
+      const uid = window.localStorage.getItem('uid')
+      if (this.isNewForm) {
+        const skill = deepCopy(this.skill)
+        skill.update = new Date()
+        this.createExperience({ tag: 'skill', item: skill })
+        if (this.info.skill.length === 1) {
+          res = await createSkill(uid, this.info.skill)
         }
-        this.info.skill.push(skill)
-        res = await createSkill(this.info.skill)
+        res = await updateSkill(uid, this.info.skill)
+      } else {
+        this.updateExperience({ tag: 'skill', item: this.skill })
+        res = await updateSkill(uid, this.info.skill)
       }
+      console.log(res)
     },
-  },
-  created() {
-    console.log(this.info.skill.length)
+    ...mapUserMutations(['createExperience', 'updateExperience']),
   },
 }
 </script>

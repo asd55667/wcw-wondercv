@@ -106,14 +106,14 @@ export default {
       const idx = this.modules.indexOf(item)
       this.modules.splice(idx, 1)
       this.delModuleItem(idx)
-      this.changeRefState(item.id)
     },
     addModule(tag) {
       this.switchFormTag(tag)
+      this.switchFormState(true)
       this.switchTab(0)
     },
-    ...mapUserMutations(['resetModules', 'delModuleItem', 'changeRefState']),
-    ...mapResumeMutations(['switchFormTag', 'switchTab']),
+    ...mapUserMutations(['resetModules', 'delModuleItem']),
+    ...mapResumeMutations(['switchFormTag', 'switchTab', 'switchFormState']),
   },
   computed: {
     ...mapUserState(['remains']),

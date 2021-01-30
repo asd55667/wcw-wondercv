@@ -39,16 +39,16 @@ export default {
   display: flex;
   justify-content: center;
   height: var(--cvHeight);
-}
 
-.resume-view {
-  margin-left: 16px;
-  max-width: 720px;
-  min-width: 450px;
-  transition: all 0.3s ease;
-  background: #f9f9f9;
-  flex: 1;
-  transform-origin: 0 0;
-  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04);
+  .resume-view {
+    margin-left: 16px;
+    max-width: 720px;
+    min-width: 450px;
+    transition: all 0.3s ease;
+    background: #f9f9f9;
+    flex: 1;
+    transform-origin: 0 0;
+    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04);
+  }
 }
 </style>

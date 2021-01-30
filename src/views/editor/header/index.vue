@@ -69,6 +69,7 @@
 import Header from '@/layout/Header'
 import Hide from '@/views/common/Hide'
 import Share from './pendant/Share'
+import { cloneNode } from '@/utils'
 
 export default {
   components: {
@@ -112,51 +113,7 @@ export default {
     },
 
     downloadCV() {
-      var cloneNode = function(node, javascriptEnabled) {
-        // Recursively clone the node.
-        var clone =
-          node.nodeType === 3
-            ? document.createTextNode(node.nodeValue)
-            : node.cloneNode(false)
-        for (var child = node.firstChild; child; child = child.nextSibling) {
-          if (
-            javascriptEnabled === true ||
-            child.nodeType !== 1 ||
-            child.nodeName !== 'SCRIPT'
-          ) {
-            clone.appendChild(cloneNode(child, javascriptEnabled))
-          }
-        }
-
-        if (node.nodeType === 1) {
-          // Preserve contents/properties of special nodes.
-          if (node.nodeName === 'CANVAS') {
-            clone.width = node.width
-            clone.height = node.height
-            clone.getContext('2d').drawImage(node, 0, 0)
-          } else if (
-            node.nodeName === 'TEXTAREA' ||
-            node.nodeName === 'SELECT'
-          ) {
-            clone.value = node.value
-          }
-
-          // Preserve the node's scroll position when it loads.
-          clone.addEventListener(
-            'load',
-            function() {
-              clone.scrollTop = node.scrollTop
-              clone.scrollLeft = node.scrollLeft
-            },
-            true,
-          )
-        }
-
-        // Return the cloned node.
-        return clone
-      }
-
-      const resume = cloneNode(document.getElementById('resume'), true)
+      const resume = cloneNode(document.getElementById('resume'), false)
       resume.style.width = '190mm'
       resume.style.height = '841px'
       resume.style.fontFamily = 'FZLTCXHJW'

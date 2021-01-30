@@ -1,12 +1,12 @@
 <template>
   <div class="base-wrap">
     <div class="module">
-      <div class="title">
+      <div class="title" @click="addModuleX(resumeModule)">
         <div class="name">{{ resumeModule.name }}</div>
         <div
           v-if="resumeModule.multiple"
           class="add-module"
-          @click.stop="addModule"
+          @click.stop="addModule(resumeModule.tag)"
         >
           <i class="el-icon-circle-plus"></i>
           <span class="add-txt">添加</span>
@@ -66,6 +66,13 @@
 </template>
 
 <script>
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 export default {
   props: {
     resumeModule: {
@@ -81,8 +88,15 @@ export default {
     },
   },
   methods: {
-    addModule() {
-      console.log('addmodule')
+    addModule(tag) {
+      this.switchFormState(true)
+      this.switchFormTag(tag)
+      this.switchTab(0)
+    },
+    addModuleX(resumeModule) {
+      if (resumeModule.content.length === 0) {
+        this.addModule(resumeModule.tag)
+      }
     },
     swap(i, j) {
       this.content[i] = this.content.splice(j, 1, this.content[i])[0]
@@ -100,6 +114,8 @@ export default {
     contentIdx(i) {
       this.$emit('formIdx', i)
     },
+
+    ...mapResumeMutations(['switchFormState', 'switchFormTag', 'switchTab']),
   },
 }
 </script>
@@ -145,9 +161,6 @@ export default {
       font-size: 24px;
     }
   }
-}
-.title:hover {
-  cursor: pointer;
 }
 
 .move-op {

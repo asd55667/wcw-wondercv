@@ -68,7 +68,7 @@ export default {
       // screenWidth: '',
       // screenHeight: '',
       resumeWidth: '',
-      rawWidth: 0,
+      rawWidth: '',
     }
   },
   mounted() {
@@ -80,12 +80,15 @@ export default {
           document.querySelector('.index-main'),
           null,
         ).marginRight.slice(0, -2)
+        console.log(this.scale)
         console.log('margin', marginRight)
-        marginRight = +marginRight + 15
+        marginRight = +marginRight //+ 15
         if (marginRight > -270 && marginRight < 0) {
           this.resumeWidth = Math.max(450, this.resumeWidth + marginRight)
         } else if (marginRight >= 0) {
           if (this.activeId !== 0) {
+            console.log(this.rawWidth)
+            console.log(this.resumeWidth, this.rawWidth)
             this.resumeWidth = this.rawWidth
           }
         }
@@ -99,6 +102,7 @@ export default {
         let that = this
         setTimeout(() => {
           this.scale = (val / a4Width).toFixed(6)
+          // this.scale = this.scale > 1 ? 1 : this.scale
           that.timer = false
         }, 300)
       }
@@ -129,6 +133,7 @@ export default {
       }
     },
     switchForm(tag, i) {
+      this.switchFormState(false)
       this.switchFormTag(tag)
       this.switchFormIdx(i)
       this.switchTab(0)
@@ -140,7 +145,12 @@ export default {
     onePageFmt() {
       console.log('one page fmt')
     },
-    ...mapResumeMutations(['switchFormTag', 'switchFormIdx', 'switchTab']),
+    ...mapResumeMutations([
+      'switchFormTag',
+      'switchFormIdx',
+      'switchTab',
+      'switchFormState',
+    ]),
   },
 }
 </script>

@@ -16,7 +16,7 @@ export function formatDate(date, fmt = 'yyyy-MM-dd hh:mm:ss') {
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(
       RegExp.$1,
-      (date.getFullYear() + '').substr(4 - RegExp.$1.length)
+      (date.getFullYear() + '').substr(4 - RegExp.$1.length),
     )
   }
   let o = {
@@ -24,14 +24,14 @@ export function formatDate(date, fmt = 'yyyy-MM-dd hh:mm:ss') {
     'd+': date.getDate(),
     'h+': date.getHours(),
     'm+': date.getMinutes(),
-    's+': date.getSeconds()
+    's+': date.getSeconds(),
   }
   for (let k in o) {
     if (new RegExp(`(${k})`).test(fmt)) {
       let str = o[k] + ''
       fmt = fmt.replace(
         RegExp.$1,
-        RegExp.$1.length === 1 ? str : padLeftZero(str)
+        RegExp.$1.length === 1 ? str : padLeftZero(str),
       )
     }
   }
@@ -62,7 +62,6 @@ export function genImgUrl(url, w, h) {
   return url
 }
 
-
 export function isLast(index, arr) {
   return index === arr.length - 1
 }
@@ -88,48 +87,48 @@ export function shallowEqual(a, b, compareKey) {
 export function notify(message, type) {
   const params = {
     message,
-    duration: 1500
+    duration: 1500,
   }
   const fn = type ? Notification[type] : Notification
   return fn(params)
 }
-['success', 'warning', 'info', 'error'].forEach(key => {
-  notify[key] = (message) => {
+;['success', 'warning', 'info', 'error'].forEach(key => {
+  notify[key] = message => {
     return notify(message, key)
   }
 })
 
 export function requestFullScreen(element) {
-  const docElm = element;
+  const docElm = element
   if (docElm.requestFullscreen) {
-    docElm.requestFullscreen();
+    docElm.requestFullscreen()
   } else if (docElm.msRequestFullscreen) {
-    docElm.msRequestFullscreen();
+    docElm.msRequestFullscreen()
   } else if (docElm.mozRequestFullScreen) {
-    docElm.mozRequestFullScreen();
+    docElm.mozRequestFullScreen()
   } else if (docElm.webkitRequestFullScreen) {
-    docElm.webkitRequestFullScreen();
+    docElm.webkitRequestFullScreen()
   }
 }
 
 export function exitFullscreen() {
-  const de = window.parent.document;
+  const de = window.parent.document
 
   if (de.exitFullscreen) {
-    de.exitFullscreen();
+    de.exitFullscreen()
   } else if (de.mozCancelFullScreen) {
-    de.mozCancelFullScreen();
+    de.mozCancelFullScreen()
   } else if (de.webkitCancelFullScreen) {
-    de.webkitCancelFullScreen();
+    de.webkitCancelFullScreen()
   } else if (de.msExitFullscreen) {
     de.msExitFullscreen()
   }
 }
 
 export function isFullscreen() {
-  return document.fullScreen ||
-    document.mozFullScreen ||
-    document.webkitIsFullScreen
+  return (
+    document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen
+  )
 }
 
 export function isUndef(v) {
@@ -140,14 +139,57 @@ export function isDef(v) {
   return v !== undefined && v !== null
 }
 
-export function isTrue(v) {
-  return v === true
+export function isObject(obj) {
+  return obj !== null && typeof obj === 'object'
 }
 
-export function isFalse(v) {
-  return v === false
+export function isPromise(promise) {
+  return promise && typeof promise.then === 'function'
 }
 
 export function getPageOffset(page, limit) {
   return (page - 1) * limit
+}
+
+export function find(arr, f) {
+  return arr.filter(f)[0]
+}
+
+export function deepCopy(obj, cache = []) {
+  if (obj === null || typeof obj !== 'object' || obj instanceof Date) {
+    return obj
+  }
+  const hit = find(cache, c => c.original === obj)
+  if (hit) {
+    return hit.copy
+  }
+
+  const copy = Array.isArray(obj) ? [] : {}
+  cache.push({
+    original: obj,
+    copy,
+  })
+
+  Object.keys(obj).forEach(key => {
+    copy[key] = deepCopy(obj[key], cache)
+  })
+
+  return copy
+}
+
+export function forEachValue(obj, fn) {
+  Object.keys(obj).forEach(key => fn(obj[key], key))
+}
+
+const padZero = v => (v < 10 ? '0' + v : v)
+
+export const relativeDate = date => {
+  const currentDate = new Date()
+  if (currentDate.getTime() - date.getTime() < 1000 * 3600 * 1) return `刚刚`
+  if (date.getFullYear() < currentDate.getFullYear()) {
+    return `${date.getFullYear()}年${padZero(date.getMonth() + 1)}月+${padZero(
+      date.getDate(),
+    )}日`
+  }
+  return `${padZero(date.getMonth() + 1)}月${padZero(date.getDate())}日`
 }

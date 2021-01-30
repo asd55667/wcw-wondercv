@@ -25,8 +25,11 @@ export default {
   components: { BasePluralForm },
   computed: {
     ...mapUserState(['info']),
-    ...mapResumeState(['formIdx']),
+    ...mapResumeState(['formIdx', 'emptyInfo', 'isNewForm']),
     edu() {
+      if (this.isNewForm) {
+        return this.emptyInfo.edu
+      }
       return this.info.edu[this.formIdx]
     },
   },

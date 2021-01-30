@@ -2,10 +2,15 @@
   <div class="experience-wrap">
     <div class="experience">
       <div class="title fcenter">
+        <!-- tag -->
         <div class="cur pr" @click="choseModule">
           <div class="name">
-            <span>{{ name }}</span>
-            <span>({{ num }}/{{ total }})</span>
+            <span>{{ experienceBak[optionIdx].name }}</span>
+            <span
+              >({{ experienceBak[optionIdx].num }}/{{
+                experienceBak[optionIdx].total
+              }})</span
+            >
             <i class="el-icon-caret-bottom icon"></i>
           </div>
           <div
@@ -13,37 +18,59 @@
             :style="`display: ${showOption ? 'block' : 'none'};`"
           >
             <div
-              v-for="(item, i) in experience"
+              v-for="(item, i) in experienceBak"
               :key="item.name"
-              :class="['item pr', name === item.name ? 'active' : '']"
+              :class="[
+                'item pr',
+                experienceBak[optionIdx].name === item.name ? 'active' : '',
+              ]"
               @click="choseItem(i)"
             >
               <div>{{ item.name }}</div>
             </div>
           </div>
         </div>
-        <div class="btn fcenter">
+        <!-- manage btn -->
+        <div
+          class="btn fcenter"
+          @click="manageExp"
+          :style="
+            `${
+              manageState
+                ? 'background: #505657;color: #f5f6fa;'
+                : 'background: #f5f6fa;color: #505657;'
+            };`
+          "
+        >
           <i class="el-icon-setting"></i>
-          <span>管理</span>
+          <span>{{ manageState ? '完成' : '管理' }}</span>
         </div>
       </div>
+
       <div class="content-wrapper">
         <div class="list">
           <div
             class="item pr"
-            v-for="(item, i) in experience[optionIdx].content"
-            :key="item.name"
+            v-for="(item, j) in experienceBak[optionIdx].content"
+            :key="j"
           >
+            <!-- select -->
             <div
+              v-show="!manageState"
               class="option fcenter"
               :style="`background: ${item.ref ? '#505667' : ''};`"
-              @click="importExperience(i)"
+              @click="importExp(j)"
             ></div>
+            <!-- content -->
             <div class="content">
-              <div v-if="experience[optionIdx].multiple" class="attrs">
-                <div class="name">{{ item.name }}</div>
+              <div v-if="experienceBak[optionIdx].multiple" class="attrs">
+                <div class="name">
+                  {{ item.name.value }}
+                </div>
                 <div class="info txt-overflow">
-                  <span v-for="p in item.attrs" :key="p">{{ p }}</span>
+                  <span v-for="(p, name) in item.attrs" :key="name">{{
+                    p.value
+                  }}</span>
                 </div>
                 <div class="timespan txt-overflow">
                   <span v-for="time in item.timespan" :key="time">{{
@@ -52,15 +79,19 @@
                 </div>
               </div>
               <div class="desc" v-html="item.desc"></div>
-              <div class="update">更新时间：{{ item.update }}</div>
+              <div class="update">更新时间：{{ item.update | relativeDate}}</div>
+            </div>
+            <!-- del -->
+            <div class="delete" v-show="manageState" @click="deleteExp(j)">
+              <i class="el-icon-delete"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="btn-wrapper">
         <div class="btns fcenter">
-          <div class="cancel fcenter">取消</div>
-          <div class="confirm fcenter">确定</div>
+          <div class="cancel fcenter" @click="switchTab(0)">取消</div>
+          <div class="confirm fcenter" @click="updateExp">确定</div>
         </div>
       </div>
     </div>
@@ -82,13 +113,21 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import { deepCopy, relativeDate } from '@/utils'
 
 export default {
   data() {
-    return { optionIdx: 0, name: '', num: 0, total: 0, showOption: false }
+    return {
+      optionIdx: 0,
+      showOption: false,
+      experienceBak: [],
+      manageState: false,
+    }
   },
   created() {
     this.choseItem(0)
+    this.experienceBak = deepCopy(this.experience)
+    console.log(this.experience[0].content[0].update);
   },
   methods: {
     choseModule() {
@@ -96,17 +135,36 @@ export default {
     },
     choseItem(i) {
       this.optionIdx = i
-      this.name = this.experience[i].name
-      this.num = this.experience[i].num
-      this.total = this.experience[i].total
     },
-    importExperience(i) {
-      const idx = this.optionIdx
-      this.experience[idx].content[i].ref = !this.experience[idx].content[i].ref
+
+    importExp(idx) {
+      const i = this.optionIdx
+      this.experienceBak[i].content[idx].ref = !this.experienceBak[i].content[
+        idx
+      ].ref
     },
+    updateExp() {
+      this.experienceBak.forEach(exp => {
+        const content = deepCopy(exp.content)
+        this.updateExperience({ tag: exp.tag, content })
+      })
+    },
+    manageExp() {
+      this.manageState = !this.manageState
+    },
+    deleteExp(idx) {
+      const i = this.optionIdx
+      this.experienceBak[i].content.splice(idx, 1)
+    },
+
+    ...mapUserMutations(['manageExperience']),
+    ...mapResumeMutations(['switchTab']),
   },
   computed: {
     ...mapUserGetters(['experience']),
+  },
+  filters: {
+    relativeDate,
   },
 }
 </script>
@@ -171,8 +229,7 @@ export default {
     width: 71px;
     height: 28px;
     border-radius: 14px;
-    background: #f5f6fa;
-    color: #505657;
+
     span {
       margin-left: 3px;
     }
@@ -264,6 +321,14 @@ export default {
       }
     }
   }
+}
+
+.delete {
+  cursor: pointer;
+  color: #aeb2bd;
+}
+.delete:hover {
+  color: #505657;
 }
 
 .btn-wrapper {

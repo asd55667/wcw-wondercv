@@ -89,7 +89,7 @@ export default {
       desc: '总结优势，突出亮点',
       img: '',
       content: null,
-      multiple: true,
+      multiple: false,
     },
     {
       id: 10,
@@ -266,6 +266,6 @@ export default {
         update: new Date(),
       },
     ],
-    summary: [{ desc: 'asd', update: new Date() }],
+    summary: [{ ref: false, desc: 'asd', update: new Date() }],
   },
 }

@@ -61,7 +61,15 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 import { createPlural, updatePlural } from '@/api'
+import { deepCopy } from '@/utils'
 
 export default {
   components: { BaseForm },
@@ -97,11 +105,30 @@ export default {
       }
       return ret
     },
+    ...mapUserState(['info']),
+    ...mapResumeState(['isNewForm', 'emptyInfo']),
   },
   methods: {
     async submitForm() {
-      const res = await createPlural(this.formTag, this.info[this.formTag])
+      let res
+      const uid = window.localStorage.getItem('uid')
+      if (this.isNewForm) {
+        const form = deepCopy(this.form)
+        form.update = new Date()
+        this.createExperience({ tag: this.formTag, item: form })
+
+        if (this.info[this.formTag].length === 1) {
+          res = await createPlural(uid, this.formTag, this.info[this.formTag])
+        }
+        res = await updatePlural(uid, this.formTag, this.info[this.formTag])
+      } else {
+        console.log(this.form.update)
+        this.updateExperience({ tag: this.formTag, item: this.form })
+        res = await updatePlural(uid, this.formTag, this.info[this.formTag])
+      }
+      console.log(res)
     },
+    ...mapUserMutations(['createExperience', 'updateExperience']),
   },
   created() {
     // console.log(this.tag2name[this.formTag])

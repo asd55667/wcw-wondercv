@@ -11,6 +11,10 @@ export default {
     state.formIdx = Idx
   },
 
+  switchFormState(state, bool) {
+    state.isNewForm = bool
+  },
+
   scanning(state) {
     state.isScanning = !state.isScanning
   },
