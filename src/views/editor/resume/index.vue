@@ -1,29 +1,17 @@
 <template>
-  <div class="resume-wrapper pr" :style="`width:${resumeWidth};`">
+  <div class="resume-wrapper pr">
+    <!-- :style="{ width: `${resumeWidth}px` }" -->
     <!-- <div>{{ screenWidth }} × {{ screenHeight }} | {{ resumeWidth }}</div> -->
     <div
       id="resume"
       class="a4 one-page-bottom"
-      :style="`transform: scale(${scale});`"
+      :style="{ transform: `scale(${scale})` }"
     >
       <div
         class="scan"
         :style="`display:${isScanning ? 'block' : 'none'} ;`"
       ></div>
-      <div class="cv">
-        <div @click="switchForm('basic', 0)">
-          <basic-view></basic-view>
-        </div>
-        <div class="resume-view" v-for="item in importedModules" :key="item.id">
-          <!-- <div @click="switchForm(item.tag)"> -->
-          <div>
-            <base-view
-              :resumeModule="item"
-              @formIdx="switchForm(item.tag, $event)"
-            ></base-view>
-          </div>
-        </div>
-      </div>
+      <CV></CV>
     </div>
     <div class="pagination">pagination</div>
     <div class="one-page pa" @click="onePageFmt">
@@ -36,8 +24,9 @@
 </template>
 
 <script>
-import BaseView from './BaseView'
-import BasicView from './BasicView'
+import CV from './CV'
+
+import { addResizeListener, removeResizeListener } from '@/utils'
 
 import {
   mapState as mapResumeState,
@@ -46,111 +35,63 @@ import {
   mapActions as mapResumeActions,
 } from '@/store/helper/resume'
 
-import {
-  mapState as mapUserState,
-  mapGetters as mapUserGetters,
-  mapActions as mapUserActions,
-  mapMutations as mapUserMutations,
-} from '@/store/helper/user'
-
 const a4Width = 793
 
 export default {
   name: 'ResumeView',
   components: {
-    BasicView,
-    BaseView,
+    CV,
   },
   data() {
     return {
-      scale: 0.906801,
       // scale: 1,
-      // screenWidth: '',
-      // screenHeight: '',
       resumeWidth: '',
-      rawWidth: '',
+      cvHeight: 1,
+      rawWidth: 0,
     }
   },
-  mounted() {
-    this.resumeWidth = this.$el.offsetWidth
-    this.rawWidth = this.$el.offsetWidth
-    window.onresize = () => {
-      return (() => {
-        let marginRight = getComputedStyle(
-          document.querySelector('.index-main'),
-          null,
-        ).marginRight.slice(0, -2)
-        console.log(this.scale)
-        console.log('margin', marginRight)
-        marginRight = +marginRight //+ 15
-        if (marginRight > -270 && marginRight < 0) {
-          this.resumeWidth = Math.max(450, this.resumeWidth + marginRight)
-        } else if (marginRight >= 0) {
-          if (this.activeId !== 0) {
-            console.log(this.rawWidth)
-            console.log(this.resumeWidth, this.rawWidth)
-            this.resumeWidth = this.rawWidth
-          }
-        }
-      })()
-    }
-  },
-  watch: {
-    resumeWidth(val) {
-      if (!this.timer) {
-        this.timer = true
-        let that = this
-        setTimeout(() => {
-          this.scale = (val / a4Width).toFixed(6)
-          // this.scale = this.scale > 1 ? 1 : this.scale
-          that.timer = false
-        }, 300)
-      }
-    },
 
-    activeId(val) {
-      if (val !== 0) {
-        setTimeout(() => {
-          this.resumeWidth = this.rawWidth
-        }, 300)
-      }
-    },
-  },
-
-  created() {},
   computed: {
+    isForm() {
+      if (this.activeId !== 0) {
+        this.resumeWidth = this.rawWidth
+      }
+    },
+    scale() {
+      const scale = (this.resumeWidth / a4Width).toFixed(6)
+      // return 0.5
+      return scale < 0.5 ? 0.5 : scale
+    },
     ...mapResumeState(['isScanning', 'activeId']),
-    ...mapUserState(['remains']),
-    ...mapUserGetters(['importedModules']),
   },
 
   methods: {
-    componentId(id) {
-      for (const m of this.remains) {
-        if (id === m.id) {
-          return m.tag + '-view'
-        }
-      }
-    },
-    switchForm(tag, i) {
-      this.switchFormState(false)
-      this.switchFormTag(tag)
-      this.switchFormIdx(i)
-      this.switchTab(0)
-      setTimeout(() => {
-        this.resumeWidth = this.$el.clientWidth
-      }, 300)
-    },
-
     onePageFmt() {
       console.log('one page fmt')
     },
-    ...mapResumeMutations([
-      'switchFormTag',
-      'switchFormIdx',
-      'switchTab',
-      'switchFormState',
-    ]),
+    resetResumeWidth() {
+      const offsetRight =
+        document.body.offsetWidth - a4Width - this.$el.offsetLeft
+
+      if (offsetRight < 0) {
+        this.resumeWidth = Math.max(450, this.resumeWidth + offsetRight)
+      } else {
+        if (this.isForm !== 0) {
+          this.resumeWidth = this.rawWidth
+        }
+      }
+    },
+  },
+
+  mounted() {
+    this.resumeWidth = this.$el.offsetWidth
+    this.rawWidth = this.$el.offsetWidth
+    this.$nextTick(() => {
+      addResizeListener(this.$el, this.resetResumeWidth)
+    })
+  },
+  beforeDestroy() {
+    if (this.$el) removeResizeListener(this.$el, this.resetResumeWidth)
   },
 }
 </script>
@@ -158,12 +99,12 @@ export default {
 <style lang="less" scoped>
 .resume-wrapper {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   box-sizing: content-box;
 }
-.cv {
-}
+
 .a4 {
   width: 210mm;
   height: 297mm;
@@ -198,7 +139,6 @@ export default {
 .resume-wrapper > .one-page {
   display: none;
   // display: flex;
-  // color: red;
   align-items: center;
   justify-content: center;
   bottom: 100px;

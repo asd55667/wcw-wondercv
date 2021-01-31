@@ -18,3 +18,6 @@ export const createPlural = (id, tag, form) =>
   rrequest.post(`/resume/${id}/${tag}`, form)
 export const updatePlural = (id, tag, form) =>
   rrequest.patch(`/resume/${id}/${tag}`, form)
+
+export const sendEmail = (id, payload) =>
+  rrequest.post(`/email/resume/${id}`, payload)

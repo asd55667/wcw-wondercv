@@ -39,7 +39,7 @@
               发送
             </div>
             <div slot="hide" class="share-wrap">
-              <share></share>
+              <share-cv></share-cv>
             </div>
           </hide>
           <hide class="more">
@@ -68,14 +68,14 @@
 <script>
 import Header from '@/layout/Header'
 import Hide from '@/views/common/Hide'
-import Share from './pendant/Share'
+import ShareCv from './pendant/ShareCv'
 import { cloneNode } from '@/utils'
 
 export default {
   components: {
     Header,
     Hide,
-    Share,
+    ShareCv,
   },
   data() {
     return {
@@ -112,17 +112,27 @@ export default {
       }
     },
 
-    downloadCV() {
-      const resume = cloneNode(document.getElementById('resume'), false)
-      resume.style.width = '190mm'
-      resume.style.height = '841px'
+    generateResumeNode() {
+      const resume = cloneNode(document.querySelector('#resume'), false)
+      const avatar = resume.querySelector('.avatar')
+      avatar.parentNode.removeChild(avatar)
+      resume.style.transform = `scale(${(595 / 793) * 1.16})`
+      // resume.style.width = '595px'
+      // resume.style.width = '170mm'
+      const cv = document.querySelector('.cv')
+      const height = getComputedStyle(cv, null).height.slice(0, -2)
+      resume.style.height = `${+height}px`
       resume.style.fontFamily = 'FZLTCXHJW'
-      resume.style.letterSpacing = '1.2px'
+      // resume.style.fontFamily = 'WeiRuanYaHei'
 
+      resume.style.letterSpacing = `${1.4}px`
+      return resume
+    },
+
+    downloadCV() {
       let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
       // console.log(pdf.getFontList())
-
-      let opt = {}
+      const resume = this.generateResumeNode()
       pdf.html(resume, {
         callback: function(pdf) {
           pdf.save('wcw.pdf')
@@ -130,7 +140,12 @@ export default {
       })
     },
     printCV() {
-      console.log(2)
+      window.printJS({
+        printable: 'resume',
+        type: 'html',
+        honorColor: true,
+        targetStyles: ['*'],
+      })
     },
     copyCV() {},
     deleteCV() {},

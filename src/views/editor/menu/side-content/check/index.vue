@@ -224,7 +224,7 @@ export default {
 }
 
 .suggest {
-  height: 516.65px;
+  height: 480px;
   overflow: scroll;
   border-radius: 0 0 4px 4px;
   box-sizing: border-box;

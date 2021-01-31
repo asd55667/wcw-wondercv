@@ -78,10 +78,7 @@
 
 <script>
 import throttle from 'throttle-debounce/throttle'
-import {
-  addResizeListener,
-  removeResizeListener,
-} from '../../../utils/resize-event'
+import { addResizeListener, removeResizeListener } from '@/utils'
 
 export default {
   name: 'Swiper',

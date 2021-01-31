@@ -15,6 +15,8 @@ export default {
   appendModuleItem(state) {},
 
   delModuleItem(state, idx) {
+    const tag = state.remains[state.imported[idx] - 1].tag
+    state.info[tag].forEach(v => (v.ref = false))
     state.imported.splice(idx, 1)
   },
 
@@ -29,6 +31,10 @@ export default {
 
   manageExperience(state, payload) {
     const { tag, content } = payload
+    const idx = state.remains.filter(v => v.tag === tag)[0].id
+    content.forEach(v => {
+      if (v.ref && !state.imported.includes(idx)) state.imported.push(idx)
+    })
     state.info[tag] = content
   },
 

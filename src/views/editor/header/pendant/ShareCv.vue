@@ -23,12 +23,29 @@
     </div>
     <div class="email">
       <div class="left">
-        <p class="to">发送至邮箱</p>
+        <p class="to">
+          发送至邮箱
+        </p>
         <p class="title">
           输入邮箱地址，简历将以PDF格式发送至您的邮箱
         </p>
+        <el-form :model="emailForm" ref="emailFormRef">
+          <el-form-item
+            prop="email"
+            label=""
+            :rules="[
+              { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+              {
+                type: 'email',
+                message: '请输入正确的邮箱地址',
+                trigger: ['blur', 'change'],
+              },
+            ]"
+          >
+            <el-input v-model="emailForm.email"></el-input> </el-form-item
+        ></el-form>
       </div>
-      <div class="right">
+      <div class="right" @click="submitForm('emailFormRef')">
         <img
           src="https://static.wondercv.com/cv_pc_vue/img/around-right.5ece8505.svg"
           alt=""
@@ -39,9 +56,22 @@
 </template>
 
 <script>
+import { cloneNode } from '@/utils'
+
 export default {
   data() {
-    return {}
+    return { emailForm: { email: '344078971@qq.com' } }
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$emit('sendToEmail', emailForm.email)
+        } else {
+          console.log('wrong eamil')
+        }
+      })
+    },
   },
 }
 </script>

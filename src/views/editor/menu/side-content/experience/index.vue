@@ -79,7 +79,9 @@
                 </div>
               </div>
               <div class="desc" v-html="item.desc"></div>
-              <div class="update">更新时间：{{ item.update | relativeDate}}</div>
+              <div class="update">
+                更新时间：{{ item.update | relativeDate }}
+              </div>
             </div>
             <!-- del -->
             <div class="delete" v-show="manageState" @click="deleteExp(j)">
@@ -90,7 +92,7 @@
       </div>
       <div class="btn-wrapper">
         <div class="btns fcenter">
-          <div class="cancel fcenter" @click="switchTab(0)">取消</div>
+          <div class="cancel fcenter" @click="switchTab(1)">取消</div>
           <div class="confirm fcenter" @click="updateExp">确定</div>
         </div>
       </div>
@@ -127,7 +129,6 @@ export default {
   created() {
     this.choseItem(0)
     this.experienceBak = deepCopy(this.experience)
-    console.log(this.experience[0].content[0].update);
   },
   methods: {
     choseModule() {
@@ -146,7 +147,7 @@ export default {
     updateExp() {
       this.experienceBak.forEach(exp => {
         const content = deepCopy(exp.content)
-        this.updateExperience({ tag: exp.tag, content })
+        this.manageExperience({ tag: exp.tag, content })
       })
     },
     manageExp() {
@@ -154,6 +155,7 @@ export default {
     },
     deleteExp(idx) {
       const i = this.optionIdx
+      // this.switchTab(0)
       this.experienceBak[i].content.splice(idx, 1)
     },
 

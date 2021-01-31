@@ -18,3 +18,16 @@ export default new Vuex.Store({
   },
   plugins: debug ? [createLogger()] : [],
 })
+
+if (module.hot) {
+  module.hot.accept(['./modules/user/mutations'], () => {
+    const newUserModule = require('./modules/user').default
+    const newResumeModule = require('./modules/resume').default
+    store.hotUpdate({
+      modules: {
+        resume: newResumeModule,
+        user: newUserModule,
+      },
+    })
+  })
+}

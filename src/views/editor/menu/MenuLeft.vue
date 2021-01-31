@@ -4,7 +4,7 @@
       <img
         class="bkgd pa"
         src="https://files.wondercv.com/cv-sidebar/sidebar-select-bgimg.png"
-        :style="`transform: translateY(${(activeId - 1) * 117}px);`"
+        :style="`transform: translateY(${(activeId - 1) * 134}px);`"
       />
       <div
         :class="[
