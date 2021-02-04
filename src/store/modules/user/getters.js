@@ -1,6 +1,7 @@
 import { isDef } from '@/utils'
 
-export const isLogin = state => isDef(state.user.key)
+export const isLogin = state =>
+  isDef(state.user.name) || isDef(state.user.email)
 
 export const experience = state => {
   let ms = state.remains
@@ -9,12 +10,13 @@ export const experience = state => {
   return ms
 }
 export const importedModules = (state, getters) => {
-  return state.imported.map(id => getters.experience.find(v => v.id === id))
-  // return state.imported.map(idx => state.remains[idx - 1])
+  const { imported } = state.info.basic
+  return imported.map(id => getters.experience.find(v => v.id === id))
 }
 
 export const unimportedModules = state => {
-  return state.remains.filter(v => !state.imported.includes(v.id))
+  const { imported } = state.info.basic
+  return state.remains.filter(v => !imported.includes(v.id))
 }
 
 export const socialTags = state => {

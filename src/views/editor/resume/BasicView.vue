@@ -2,7 +2,7 @@
   <div class="basic-info pr">
     <div class="title pr">
       <div class="info pa">
-        <div class="name basic">{{ basic.user.name.value}}</div>
+        <div class="name basic">{{ basic.user.name.value }}</div>
         <div class="basic">
           <div class="item" v-for="(item, prop) in basic.contact" :key="prop">
             <span>{{ item.value }}</span>
@@ -22,15 +22,12 @@
         </div>
       </div>
     </div>
-    <div v-if="hasAvatar" class="usr-avatar pr">
-      <img
-        class="avatar-img"
-        src="https://prod-file-uploaded.oss-cn-beijing.aliyuncs.com/cv/cv_accounts/avatars/18160aa0-225e-11eb-8364-05c75218e992.gif"
-      />
+    <div v-if="avatar" class="usr-avatar pr">
+      <img class="avatar-img" :src="avatar" />
       <div class="img-op">
         <div class="op">
-          <p><i class="el-icon-edit"></i>编辑</p>
-          <p @click.stop="delImg"><i class="el-icon-delete"></i>删除</p>
+          <p @click.stop="addAvatar"><i class="el-icon-edit"></i>编辑</p>
+          <p @click.stop="delAvatar"><i class="el-icon-delete"></i>删除</p>
         </div>
       </div>
     </div>
@@ -57,18 +54,22 @@ import {
 
 export default {
   data() {
-    return { hasAvatar: false }
+    return { hasAvatar: true }
   },
   computed: {
     basic() {
       return this.info.basic
     },
+    avatar() {
+      return this.basic.user?.avatar?.src
+    },
     ...mapUserState(['info']),
     ...mapUserGetters(['socialTags', 'otherTags']),
   },
   methods: {
-    delImg() {
-      this.hasAvatar = false
+    addAvatar() {},
+    delAvatar() {
+      this.basic.user.avatar.src = ''
     },
   },
   created() {

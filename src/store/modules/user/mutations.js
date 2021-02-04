@@ -3,25 +3,26 @@ export default {
     state.user = user
   },
 
-  setImportedModules(state, imported) {
-    state.imported = imported
-  },
-
   setUserInfo(state, info) {
     state.info = info
+  },
+
+  setImportedModules(state, imported) {
+    state.info.basic.Dateimported = imported
   },
 
   // module manage
   appendModuleItem(state) {},
 
   delModuleItem(state, idx) {
-    const tag = state.remains[state.imported[idx] - 1].tag
+    const { imported } = state.info.basic
+    const tag = state.remains[imported[idx] - 1].tag
     state.info[tag].forEach(v => (v.ref = false))
-    state.imported.splice(idx, 1)
+    imported.splice(idx, 1)
   },
 
   resetModules(state, imported) {
-    state.imported = imported
+    state.info.basic.imported = imported
   },
 
   changeRefState(state, payload) {
@@ -31,9 +32,10 @@ export default {
 
   manageExperience(state, payload) {
     const { tag, content } = payload
+    const { imported } = state.info.basic
     const idx = state.remains.filter(v => v.tag === tag)[0].id
     content.forEach(v => {
-      if (v.ref && !state.imported.includes(idx)) state.imported.push(idx)
+      if (v.ref && !imported.includes(idx)) imported.push(idx)
     })
     state.info[tag] = content
   },

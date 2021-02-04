@@ -35,7 +35,6 @@ export default {
   },
   methods: {
     switchTab(i) {
-      // console.log(i)
       this.activeId = i
     },
   },

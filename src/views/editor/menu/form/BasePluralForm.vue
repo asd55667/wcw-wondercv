@@ -69,7 +69,7 @@ import {
 } from '@/store/helper/resume'
 
 import { createPlural, updatePlural } from '@/api'
-import { deepCopy } from '@/utils'
+import { deepCopy, forEachValue } from '@/utils'
 
 export default {
   components: { BaseForm },
@@ -78,6 +78,7 @@ export default {
     formTag: {
       type: String,
     },
+    // placeholder or store
     form: {
       type: Object,
     },
@@ -106,7 +107,7 @@ export default {
       return ret
     },
     ...mapUserState(['info']),
-    ...mapResumeState(['isNewForm', 'emptyInfo']),
+    ...mapResumeState(['isNewForm']),
   },
   methods: {
     async submitForm() {
@@ -114,6 +115,9 @@ export default {
       const uid = window.localStorage.getItem('uid')
       if (this.isNewForm) {
         const form = deepCopy(this.form)
+
+        // this.clearAttr(form)
+
         form.update = new Date()
         this.createExperience({ tag: this.formTag, item: form })
 
@@ -121,8 +125,8 @@ export default {
           res = await createPlural(uid, this.formTag, this.info[this.formTag])
         }
         res = await updatePlural(uid, this.formTag, this.info[this.formTag])
+        // update exist form
       } else {
-        console.log(this.form.update)
         this.updateExperience({ tag: this.formTag, item: this.form })
         res = await updatePlural(uid, this.formTag, this.info[this.formTag])
       }

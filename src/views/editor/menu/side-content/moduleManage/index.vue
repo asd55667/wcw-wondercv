@@ -10,8 +10,8 @@
           <transition-group name="flip-list" tag="div" class="">
             <div
               class="item"
-              v-for="item in this.modules"
-              :key="item.name"
+              v-for="(item, idx) in this.modules"
+              :key="idx"
               draggable="true"
               @dragstart="dragstart(item)"
               @dragover="dragover(item)"

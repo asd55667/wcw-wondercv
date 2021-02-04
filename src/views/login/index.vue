@@ -112,9 +112,9 @@
               </button>
             </div>
           </div>
-          <button class="submit txt-center" @click="loginWithEmail">
+          <div class="submit txt-center" @click="loginWithEmail">
             登录
-          </button>
+          </div>
         </el-form>
         <div v-if="!isWxLogin" class="clearfix moretxt">
           <div class="left">新用户将为您免费注册账号</div>
@@ -173,7 +173,7 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
-        valCode: '2983',
+        valCode: '1F1A',
       },
       loginFormRules: {
         email: [
@@ -246,23 +246,27 @@ export default {
       }, 1000)
     },
 
+    loginMsg(res) {
+      if (res.status !== 200) return this.$message.error(`登录失败`)
+      if (res.data.code === -1) {
+        this.$message.warning(`${res.data.msg}`)
+      } else {
+        const { user_info, access_token, refresh_token, uid } = res.data
+        this.authlogin(user_info)
+        this.$message.success(`登录成功`)
+        window.localStorage.setItem('access_token', access_token)
+        window.localStorage.setItem('refresh_token', refresh_token)
+        window.localStorage.setItem('uid', uid)
+        this.$router.go(-1)
+      }
+    },
+
     async loginWithEmail() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
         const res = await emailLogin(this.loginForm)
         // console.log(res)
-        if (res.status !== 200) return this.$message.error(`登录失败`)
-        if (res.data.code === -1) {
-          this.$message.warning(`${res.data.msg}`)
-        } else {
-          this.$message.success(`登录成功`)
-
-          this.authlogin(res.data.user_info)
-          window.localStorage.setItem('access_token', res.data.access_token)
-          window.localStorage.setItem('refresh_token', res.data.refresh_token)
-          window.localStorage.setItem('uid', res.data.uid)
-          this.$router.go(-1)
-        }
+        this.loginMsg(res)
       })
     },
 
@@ -275,6 +279,7 @@ export default {
         if (window.localStorage.getItem('access_token')) {
           clearInterval(ticker)
           const res = await gitLogin()
+          this.loginMsg(res)
           // console.log(res)
         }
       }, 1000)

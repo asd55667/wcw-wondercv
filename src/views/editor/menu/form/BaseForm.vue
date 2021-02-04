@@ -38,6 +38,8 @@ export default {
     ...mapResumeMutations(['switchTab']),
     submitForm() {
       this.$emit('submit')
+      this.switchTab(1)
+      
     },
   },
 }

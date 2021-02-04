@@ -33,9 +33,9 @@ export default {
 }
 
 .index-main {
-  // width: 1196px;
-  width: 100%;
-  // margin: auto;
+  width: 1196px;
+  // width: 100%;
+  margin: auto;
   display: flex;
   justify-content: center;
   height: var(--cvHeight);

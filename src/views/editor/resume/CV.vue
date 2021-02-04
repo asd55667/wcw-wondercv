@@ -5,7 +5,7 @@
     <div @click="switchForm('basic', 0)">
       <basic-view></basic-view>
     </div>
-    <div class="resume-view" v-for="item in importedModules" :key="item.id">
+    <div class="resume-view" v-for="(item, idx) in importedModules" :key="idx">
       <div>
         <base-view
           :resumeModule="item"
@@ -56,13 +56,6 @@ export default {
     ...mapUserGetters(['importedModules']),
   },
   methods: {
-    componentId(id) {
-      for (const m of this.remains) {
-        if (id === m.id) {
-          return m.tag + '-view'
-        }
-      }
-    },
     switchForm(tag, i) {
       this.switchFormState(false)
       this.switchFormTag(tag)

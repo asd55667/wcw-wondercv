@@ -6,10 +6,6 @@ import store from './store'
 
 import './plugins'
 
-// import '@/style/index.scss'
-
-// Vue.prototype.$http = axios
-
 Vue.config.productionTip = false
 
 new Vue({

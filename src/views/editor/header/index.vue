@@ -39,7 +39,7 @@
               发送
             </div>
             <div slot="hide" class="share-wrap">
-              <share-cv></share-cv>
+              <share-cv @sendToEmail="sendToEmail($event)"></share-cv>
             </div>
           </hide>
           <hide class="more">
@@ -70,6 +70,15 @@ import Header from '@/layout/Header'
 import Hide from '@/views/common/Hide'
 import ShareCv from './pendant/ShareCv'
 import { cloneNode } from '@/utils'
+
+import {
+  mapState as mapUserState,
+  mapGetters as mapUserGetters,
+  mapActions as mapUserActions,
+  mapMutations as mapUserMutations,
+} from '@/store/helper/user'
+
+import { sendEmail } from '@/api'
 
 export default {
   components: {
@@ -114,14 +123,16 @@ export default {
 
     generateResumeNode() {
       const resume = cloneNode(document.querySelector('#resume'), false)
-      const avatar = resume.querySelector('.avatar')
-      avatar.parentNode.removeChild(avatar)
+      if (!this.info.basic.user.avatar) {
+        const avatar = resume.querySelector('.avatar')
+        avatar.parentNode.removeChild(avatar)
+      }
       resume.style.transform = `scale(${(595 / 793) * 1.16})`
       // resume.style.width = '595px'
-      // resume.style.width = '170mm'
+      // resume.style.height = '841px'
       const cv = document.querySelector('.cv')
       const height = getComputedStyle(cv, null).height.slice(0, -2)
-      resume.style.height = `${+height}px`
+      resume.style.height = `${+height * 2}px`
       resume.style.fontFamily = 'FZLTCXHJW'
       // resume.style.fontFamily = 'WeiRuanYaHei'
 
@@ -129,16 +140,36 @@ export default {
       return resume
     },
 
+    sendToEmail(payload) {
+      const { email, filename } = payload
+      const resume = this.generateResumeNode()
+      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
+
+      const msg = this.$message
+      pdf.html(resume, {
+        callback: async function(pdf) {
+          // const cv = pdf.output('arraybuffer')
+          const cv = pdf.output()
+          const res = await sendEmail({ cv, email, filename })
+          if (res.status !== 200) return msg.error(`登录失败`)
+          else {
+            msg.success(`${res.data}`)
+          }
+        },
+      })
+    },
+
     downloadCV() {
+      const resume = this.generateResumeNode()
       let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
       // console.log(pdf.getFontList())
-      const resume = this.generateResumeNode()
       pdf.html(resume, {
         callback: function(pdf) {
           pdf.save('wcw.pdf')
         },
       })
     },
+
     printCV() {
       window.printJS({
         printable: 'resume',
@@ -149,6 +180,9 @@ export default {
     },
     copyCV() {},
     deleteCV() {},
+  },
+  computed: {
+    ...mapUserState(['info']),
   },
 }
 </script>

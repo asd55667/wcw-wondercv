@@ -32,14 +32,20 @@ import { deepCopy } from '@/utils'
 export default {
   components: { BaseForm },
   data() {
-    return {}
+    return {
+      skillPlaceholder: {
+        ref: true,
+        desc: '',
+        update: '',
+      },
+    }
   },
   computed: {
     ...mapUserState(['info']),
-    ...mapResumeState(['isNewForm', 'emptyInfo']),
+    ...mapResumeState(['isNewForm']),
     skill() {
       if (this.isNewForm) {
-        return this.emptyInfo.skill
+        return this.skillPlaceholder
       } else {
         const skill = this.info.skill.filter(item => item.ref)
         return skill.length === 1 ? skill[0] : {}

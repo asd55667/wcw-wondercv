@@ -82,12 +82,77 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import {
+  mapState as mapResumeState,
+  mapGetters as mapResumeGetters,
+  mapMutations as mapResumeMutations,
+  mapActions as mapResumeActions,
+} from '@/store/helper/resume'
+
 import { createBasic, updateBasic } from '@/api'
 
 export default {
   components: { BaseForm },
   data() {
-    return {}
+    return {
+      basicPlaceholder: {
+        user: {
+          name: { desc: '姓名', value: '' },
+          avatar: { desc: '', src: '' },
+        },
+        contact: {
+          telephone: { desc: '电话', value: '' },
+          email: { desc: '邮箱', value: '' },
+          city: { desc: '现居城市', value: '' },
+        },
+        social: {
+          website: {
+            desc: '个人网站',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+          linkin: {
+            desc: 'LinkedIn',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+          wechat: {
+            desc: 'wexin',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+        },
+        other: {
+          age: {
+            desc: '年龄或生日',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+          sex: {
+            desc: '性别',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+        },
+        intension: {
+          workIntension: {
+            desc: '求职意向',
+            value: '前端开发',
+            placeholder: '如：github.com/wondercv.com',
+          },
+          currentJob: {
+            desc: '当前工作状态',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+          expectSalary: {
+            desc: '期望薪资',
+            value: null,
+            placeholder: '如：github.com/wondercv.com',
+          },
+        },
+      },
+    }
   },
   methods: {
     submitForm() {
@@ -108,18 +173,8 @@ export default {
         }
       })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
-    removeDomain(item) {
-      var index = this.dynamicValidateForm.attr.indexOf(item)
-      if (index !== -1) {
-        this.dynamicValidateForm.attr.splice(index, 1)
-      }
-    },
+
     addAttr(tag, i) {
-      // this.dynamicValidateForm.attr.push(tag)
-      // this.groups[i].tags.splice(j, 1)
       if (i === 0) {
         this.info.basic.social[tag].value = ''
       } else if (i === 1) {
@@ -131,6 +186,7 @@ export default {
   computed: {
     ...mapUserState(['info']),
     ...mapUserGetters(['socialTags', 'otherTags']),
+    ...mapResumeState(['formIdx', 'isNewForm']),
     staticValidateForm() {
       const form = {}
       Object.assign(form, this.info.basic.contact, this.info.basic.user)
@@ -152,11 +208,19 @@ export default {
         arr: [
           {
             gname: '社交信息',
-            tags: this.socialTags.emptyTags,
+            tags: this.newForm
+              ? this.basicPlaceholder.social
+              : this.socialTags.emptyTags,
           },
           {
             gname: '其他信息',
-            tags: this.otherTags.emptyTags,
+            tags: this.newForm
+              ? Object.assign(
+                  {},
+                  this.basicPlaceholder.other,
+                  this.basicPlaceholder.intension,
+                )
+              : this.otherTags.emptyTags,
           },
         ],
       }

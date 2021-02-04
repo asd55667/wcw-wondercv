@@ -68,12 +68,12 @@
                   {{ item.name.value }}
                 </div>
                 <div class="info txt-overflow">
-                  <span v-for="(p, name) in item.attrs" :key="name">{{
+                  <span v-for="(p, name, idx) in item.attrs" :key="idx">{{
                     p.value
                   }}</span>
                 </div>
                 <div class="timespan txt-overflow">
-                  <span v-for="time in item.timespan" :key="time">{{
+                  <span v-for="(time, name, idx) in item.timespan" :key="idx">{{
                     time
                   }}</span>
                 </div>
@@ -115,7 +115,7 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
-import { deepCopy, relativeDate } from '@/utils'
+import { deepCopy, relativeDate, clearAttr } from '@/utils'
 
 export default {
   data() {
@@ -129,6 +129,9 @@ export default {
   created() {
     this.choseItem(0)
     this.experienceBak = deepCopy(this.experience)
+    // this.experienceBak.forEach(item => {
+    //   clearAttr(item)
+    // })
   },
   methods: {
     choseModule() {
@@ -149,6 +152,7 @@ export default {
         const content = deepCopy(exp.content)
         this.manageExperience({ tag: exp.tag, content })
       })
+      this.$message.success('Updated')
     },
     manageExp() {
       this.manageState = !this.manageState

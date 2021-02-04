@@ -23,12 +23,27 @@ import {
 
 export default {
   components: { BasePluralForm },
+  data() {
+    return {
+      projectPlaceholder: {
+        ref: true,
+        name: { desc: '项目名称', value: '' },
+        timespan: { start: '', end: '' },
+        attrs: {
+          post: { desc: '担任角色', value: '' },
+        },
+        location: { desc: '所在城市', value: '' },
+        desc: '',
+        update: '',
+      },
+    }
+  },
   computed: {
     ...mapUserState(['info']),
-    ...mapResumeState(['formIdx', 'emptyInfo', 'isNewForm']),
+    ...mapResumeState(['formIdx', 'isNewForm']),
     project() {
       if (this.isNewForm) {
-        return this.emptyInfo.project
+        return this.projectPlaceholder
       }
       return this.info.project[this.formIdx]
     },

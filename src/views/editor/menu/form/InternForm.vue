@@ -23,12 +23,28 @@ import {
 
 export default {
   components: { BasePluralForm },
+  data() {
+    return {
+      jobPlaceholder: {
+        ref: true,
+        name: { desc: '公司名称', value: '' },
+        timespan: { start: '', end: '' },
+        attrs: {
+          post: { desc: '职位名称', value: '' },
+          department: { desc: '所在部门', value: '' },
+        },
+        location: { desc: '所在城市', value: '' },
+        desc: '',
+        update: '',
+      },
+    }
+  },
   computed: {
     ...mapUserState(['info']),
-    ...mapResumeState(['formIdx', 'emptyInfo', 'isNewForm']),
+    ...mapResumeState(['formIdx', 'isNewForm']),
     intern() {
       if (this.isNewForm) {
-        return this.emptyInfo.job
+        return this.jobPlaceholder
       }
       return this.info.job[this.formIdx]
     },

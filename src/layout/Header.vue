@@ -102,6 +102,7 @@ export default {
     }
   },
   created() {
+    console.log('user', this.user, this.isLogin)
     if (window.localStorage.getItem('access_token')) {
       ;(async () => {
         const res = await tokenLogin()

@@ -16,7 +16,7 @@
       <div class="content">
         <div
           class="items pr"
-          v-for="(item, i) in resumeModule.content"
+          v-for="(item, i) in content"
           :key="i"
           @click="contentIdx(i)"
         >
@@ -73,6 +73,8 @@ import {
   mapActions as mapResumeActions,
 } from '@/store/helper/resume'
 
+import { deepCopy, clearAttr } from '@/utils'
+
 export default {
   props: {
     resumeModule: {
@@ -84,7 +86,12 @@ export default {
   },
   computed: {
     content() {
-      return this.resumeModule.content
+      const contents = deepCopy(this.resumeModule.content)
+      // console.log(contents)
+      // for (let item of contents) {
+      //   clearAttr(item)
+      // }
+      return contents
     },
   },
   methods: {
@@ -94,6 +101,7 @@ export default {
       this.switchTab(0)
     },
     addModuleX(resumeModule) {
+      // console.log('len', resumeModule.content.length)
       if (resumeModule.content.length === 0) {
         this.addModule(resumeModule.tag)
       }

@@ -42,8 +42,15 @@
               },
             ]"
           >
-            <el-input v-model="emailForm.email"></el-input> </el-form-item
-        ></el-form>
+            <el-input v-model="emailForm.email"></el-input>
+          </el-form-item>
+          <el-form-item prop="filename" label="文件名">
+            <el-input
+              v-model="emailForm.filename"
+              placeholder="请输入邮箱地址"
+            ></el-input>
+          </el-form-item>
+        </el-form>
       </div>
       <div class="right" @click="submitForm('emailFormRef')">
         <img
@@ -60,13 +67,13 @@ import { cloneNode } from '@/utils'
 
 export default {
   data() {
-    return { emailForm: { email: '344078971@qq.com' } }
+    return { emailForm: { email: '344078971@qq.com', filename: '简历' } }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$emit('sendToEmail', emailForm.email)
+          this.$emit('sendToEmail', this.emailForm)
         } else {
           console.log('wrong eamil')
         }

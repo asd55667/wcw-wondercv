@@ -52,11 +52,6 @@ export default {
   },
 
   computed: {
-    isForm() {
-      if (this.activeId !== 0) {
-        this.resumeWidth = this.rawWidth
-      }
-    },
     scale() {
       const scale = (this.resumeWidth / a4Width).toFixed(6)
       // return 0.5
@@ -74,9 +69,9 @@ export default {
         document.body.offsetWidth - a4Width - this.$el.offsetLeft
 
       if (offsetRight < 0) {
-        this.resumeWidth = Math.max(450, this.resumeWidth + offsetRight)
+        this.resumeWidth = Math.max(450, this.resumeWidth + offsetRight * 0.8)
       } else {
-        if (this.isForm !== 0) {
+        if (this.activeId !== 0) {
           this.resumeWidth = this.rawWidth
         }
       }
@@ -84,8 +79,7 @@ export default {
   },
 
   mounted() {
-    this.resumeWidth = this.$el.offsetWidth
-    this.rawWidth = this.$el.offsetWidth
+    this.rawWidth = this.resumeWidth = this.$el.offsetWidth
     this.$nextTick(() => {
       addResizeListener(this.$el, this.resetResumeWidth)
     })
