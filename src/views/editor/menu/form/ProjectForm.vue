@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import BasePluralForm from './BasePluralForm'
+import BasePluralForm from './components/BasePluralForm'
 
 import {
   mapState as mapUserState,
@@ -34,7 +34,7 @@ export default {
         },
         location: { desc: '所在城市', value: '' },
         desc: '',
-        update: '',
+        update: new Date(),
       },
     }
   },
@@ -42,11 +42,13 @@ export default {
     ...mapUserState(['info']),
     ...mapResumeState(['formIdx', 'isNewForm']),
     project() {
-      if (this.isNewForm) {
-        return this.projectPlaceholder
-      }
-      return this.info.project[this.formIdx]
+      return this.isNewForm
+        ? this.projectPlaceholder
+        : this.info.project[this.formIdx]
     },
+  },
+  created() {
+    // console.log(this.project.update)
   },
 }
 </script>

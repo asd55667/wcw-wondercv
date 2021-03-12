@@ -26,13 +26,19 @@
       <img class="avatar-img" :src="avatar" />
       <div class="img-op">
         <div class="op">
-          <p @click.stop="addAvatar"><i class="el-icon-edit"></i>编辑</p>
+          <p @click.stop="editAvatar"><i class="el-icon-edit"></i>编辑</p>
           <p @click.stop="delAvatar"><i class="el-icon-delete"></i>删除</p>
         </div>
       </div>
     </div>
     <div v-else>
-      <div class="avatar fcenter">添加照片</div>
+      <div class="avatar fcenter bfc" @click.stop=";(function() {})()">
+        <!-- @click.stop="addAvatar" -->
+        <p class="text bfc">
+          添加照片
+        </p>
+        <input type="file" class="upload" @change.stop="addAvatar($event)" />
+      </div>
     </div>
   </div>
 </template>
@@ -52,9 +58,11 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import { updateBasic } from '@/api'
+
 export default {
   data() {
-    return { hasAvatar: true }
+    return { img: '' }
   },
   computed: {
     basic() {
@@ -67,13 +75,34 @@ export default {
     ...mapUserGetters(['socialTags', 'otherTags']),
   },
   methods: {
-    addAvatar() {},
-    delAvatar() {
-      this.basic.user.avatar.src = ''
+    addAvatar(event) {
+      const self = this
+      const file = event.target.files[0]
+
+      if (!/\.(jpe?g|png|gif)$/i.test(file.name))
+        return self.$message.error('上传头像图片格式 jpg, png, gif')
+
+      if (file.size / 1024 / 1024 > 0.3)
+        return self.$message.error('上传头像图片大小不能超过 300k!')
+
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        self.updateAvatar({ desc: file.name, src: e.target.result })
+      }
+      reader.readAsDataURL(file)
+      this.updateAvatar()
     },
+
+    delAvatar() {
+      this.updateAvatar({ desc: '', src: '' })
+    },
+    editAvatar() {
+      console.log('edit avatar')
+    },
+    ...mapUserActions(['updateAvatar']),
   },
   created() {
-    // console.log(this.socialTags)
+    // console.log(this.basic.user.avatar.src)
   },
 }
 </script>
@@ -169,9 +198,9 @@ export default {
     }
   }
 }
+
 .avatar {
   // display: none;
-  position: absolute;
   right: 0;
   top: 0;
   width: 77px;
@@ -179,6 +208,15 @@ export default {
   border: 1px dashed #bcbcbc;
   color: #9c9c9c;
   border-radius: 2px;
+
+  .text {
+  }
+  .upload {
+    opacity: 0;
+  }
+}
+.bfc {
+  position: absolute;
 }
 .usr-avatar:hover {
   .img-op {

@@ -75,7 +75,7 @@ export default {
         if (valid) {
           this.$emit('sendToEmail', this.emailForm)
         } else {
-          console.log('wrong eamil')
+          // console.log('wrong eamil')
         }
       })
     },

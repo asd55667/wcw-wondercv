@@ -173,6 +173,8 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
+        email: '123@qq.com',
+        // valCode: 'BCDB',
         valCode: '1F1A',
       },
       loginFormRules: {
@@ -252,34 +254,40 @@ export default {
         this.$message.warning(`${res.data.msg}`)
       } else {
         const { user_info, access_token, refresh_token, uid } = res.data
-        this.authlogin(user_info)
-        this.$message.success(`登录成功`)
         window.localStorage.setItem('access_token', access_token)
         window.localStorage.setItem('refresh_token', refresh_token)
         window.localStorage.setItem('uid', uid)
         this.$router.go(-1)
+        this.authlogin(user_info)
+        this.$message.success(`登录成功`)
       }
     },
 
     async loginWithEmail() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await emailLogin(this.loginForm)
-        // console.log(res)
-        this.loginMsg(res)
+        // const res = await emailLogin(this.loginForm)
+        console.log(`%c email login`, 'background: green; color: #fff')
+        emailLogin(this.loginForm).then(res => {
+          this.loginMsg(res)
+        })
       })
     },
 
     // github oauth2 login
     async oauth2() {
-      window.open('http://localhost:8081/login/github/token', '_blank')
+      window.open('/login/github/token', '_blank')
       // window.open('/github', '_blank')
       const ticker = setInterval(async () => {
         console.log('Auth...')
         if (window.localStorage.getItem('access_token')) {
           clearInterval(ticker)
-          const res = await gitLogin()
-          this.loginMsg(res)
+          // const res = await gitLogin()
+          console.log(`%c github login`, 'background: green; color: #fff')
+          gitLogin().then(res => {
+            this.loginMsg(res)
+          })
+          // this.loginMsg(res)
           // console.log(res)
         }
       }, 1000)

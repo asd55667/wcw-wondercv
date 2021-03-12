@@ -39,7 +39,7 @@
         <span>共有 1 份草稿简历</span>
       </div>
       <div class="info-wrapper pr">
-        <router-link :to="`/cvs/${usrid}/editor`" class="info pr">
+        <router-link :to="`/cvs/${usrid.split('-')[0]}/editor`" class="info pr">
           <img src="https://photo.wondercv.com/cv_doc@2x.png" alt="" />
           <div class="desc">
             <div class="name">吴承炜</div>
@@ -112,9 +112,14 @@
 <script>
 export default {
   data() {
-    return {
-      usrid: 'TsR72SQg',
-    }
+    return {}
+  },
+  computed: {
+    usrid() {
+      const uid = window.localStorage.getItem('uid')
+      if (uid) return uid
+      else return 'wcw'
+    },
   },
   methods: {},
 }

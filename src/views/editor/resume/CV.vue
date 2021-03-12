@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     resumeHeight() {
-      console.log(Math.ceil(this.cvHeight / a4Height) * a4Height)
+      // console.log(Math.ceil(this.cvHeight / a4Height) * a4Height)
       return Math.ceil(this.cvHeight / a4Height) * a4Height
     },
     ...mapUserState(['remains']),

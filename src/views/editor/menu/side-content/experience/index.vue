@@ -116,6 +116,13 @@ import {
 } from '@/store/helper/user'
 
 import { deepCopy, relativeDate, clearAttr } from '@/utils'
+import {
+  updateBasic,
+  updatePlural,
+  deletePlural,
+  updateSingular,
+  deleteSingular,
+} from '@/api'
 
 export default {
   data() {
@@ -147,12 +154,37 @@ export default {
         idx
       ].ref
     },
-    updateExp() {
+    // update all
+    async updateExp() {
       this.experienceBak.forEach(exp => {
+        // assert update
         const content = deepCopy(exp.content)
         this.manageExperience({ tag: exp.tag, content })
       })
-      this.$message.success('Updated')
+
+      const uid = window.localStorage.getItem('uid')
+      if (!uid) return this.$message.warning('Please login')
+
+      var ps = []
+      ps.push(updateBasic(uid, this.info.basic))
+
+      this.experience.forEach(exp => {
+        var { tag, content, multiple } = exp
+        if (multiple) {
+          if (content.length === 0) ps.push(deletePlural(uid, tag))
+          else ps.push(updatePlural(uid, tag, content))
+        } else {
+          if (content.length === 0) ps.push(deleteSingular(uid, tag))
+          else ps.push(updateSingular(uid, tag, content))
+        }
+      })
+      Promise.all(ps)
+        .then(() => {
+          this.$message.success('Updated')
+        })
+        .catch(err => {
+          this.$message.error('Update Err')
+        })
     },
     manageExp() {
       this.manageState = !this.manageState
@@ -168,6 +200,7 @@ export default {
   },
   computed: {
     ...mapUserGetters(['experience']),
+    ...mapUserState(['info']),
   },
   filters: {
     relativeDate,

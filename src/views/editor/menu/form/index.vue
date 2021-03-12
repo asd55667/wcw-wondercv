@@ -7,7 +7,8 @@
 <script>
 import BasicForm from './BasicForm'
 import SkillForm from './SkillForm'
-import JobForm from './InternForm'
+import SummaryForm from './SummaryForm'
+import JobForm from './JobForm'
 import ProjectForm from './ProjectForm'
 import EduForm from './EduForm'
 import CustomForm from './CustomForm'
@@ -23,6 +24,7 @@ export default {
   components: {
     BasicForm,
     SkillForm,
+    SummaryForm,
     JobForm,
     ProjectForm,
     EduForm,

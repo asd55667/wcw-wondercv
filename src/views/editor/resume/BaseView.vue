@@ -86,20 +86,22 @@ export default {
   },
   computed: {
     content() {
-      const contents = deepCopy(this.resumeModule.content)
+      // const contents = deepCopy(this.resumeModule.content)
       // console.log(contents)
       // for (let item of contents) {
       //   clearAttr(item)
       // }
-      return contents
+      return this.resumeModule.content
     },
   },
   methods: {
+    // add button
     addModule(tag) {
       this.switchFormState(true)
       this.switchFormTag(tag)
       this.switchTab(0)
     },
+    // no contnet click border to add module
     addModuleX(resumeModule) {
       // console.log('len', resumeModule.content.length)
       if (resumeModule.content.length === 0) {

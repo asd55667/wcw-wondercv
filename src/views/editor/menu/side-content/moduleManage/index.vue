@@ -67,6 +67,8 @@ import {
   mapMutations as mapUserMutations,
 } from '@/store/helper/user'
 
+import { updateBasic } from '@/api'
+
 export default {
   data() {
     return {
@@ -101,22 +103,29 @@ export default {
     dragend() {
       const imported = this.modules.map(v => v.id)
       this.resetModules(imported)
+      this.updateImported()
     },
     deleteModule(item) {
       const idx = this.modules.indexOf(item)
       this.modules.splice(idx, 1)
       this.delModuleItem(idx)
+      this.updateImported()
     },
     addModule(tag) {
       this.switchFormTag(tag)
       this.switchFormState(true)
       this.switchTab(0)
     },
+    updateImported() {
+      const uid = window.localStorage.getItem('uid')
+      if (uid) updateBasic(uid, this.info.basic)
+    },
+
     ...mapUserMutations(['resetModules', 'delModuleItem']),
     ...mapResumeMutations(['switchFormTag', 'switchTab', 'switchFormState']),
   },
   computed: {
-    ...mapUserState(['remains']),
+    ...mapUserState(['remains', 'info']),
     ...mapUserGetters(['importedModules', 'unimportedModules']),
   },
 }

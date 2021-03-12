@@ -102,11 +102,15 @@ export default {
     }
   },
   created() {
-    console.log('user', this.user, this.isLogin)
+    // console.log('user', this.user, this.isLogin)
     if (window.localStorage.getItem('access_token')) {
       ;(async () => {
         const res = await tokenLogin()
-        console.log(res)
+        // console.log(res)
+        console.log(
+          `%c auto login with token`,
+          'background: green; color: #fff',
+        )
         this.authlogin(res.data.user_info)
       })()
     }
@@ -114,10 +118,10 @@ export default {
 
   methods: {
     login() {
-      this.$router.push({ path: '/auth-signin', query: { type: 'login' } })
+      this.$router.push({ path: '/login' })
     },
     register() {
-      this.$router.push({ path: '/auth-signin', query: { type: 'register' } })
+      this.$router.push({ path: '/login' })
     },
     usrOption(e, i) {
       switch (i) {
@@ -136,10 +140,12 @@ export default {
         // logout
         case 5:
           ;(() => {
-            console.log('logout')
+            // console.log('logout')
             window.sessionStorage.removeItem('access_token')
             window.sessionStorage.removeItem('refresh_token')
             this.logout()
+            this.$router.push({ path: '/login' })
+            location.reload()
           })()
           break
       }

@@ -3,28 +3,19 @@ import VueRouter from 'vue-router'
 
 import { homeRoutes } from './home'
 
-const HelloWorld = () =>
-  import(/* webpackChunkName: "HelloWorld" */ '@/components/HelloWorld')
-
 const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login')
 
-const Editor = () =>
-  import(/* webpackChunkName: "Editor" */ '@/views/editor')
+const Editor = () => import(/* webpackChunkName: "Editor" */ '@/views/editor')
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/demo',
-    component: HelloWorld,
-  },
-
-  {
     path: '/cvs/:usrid/editor',
     component: Editor,
   },
   {
-    path: '/auth-signin',
+    path: '/login',
     component: Login,
   },
 

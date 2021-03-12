@@ -8,13 +8,13 @@ function refresh(target, name, descriptor) {
     try {
       // console.log('i ', i, arguments)
       const res = await old.apply(this, arguments)
-      console.log('decorator, ', res)
+      // console.log('decorator, ', res)
       return res
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       try {
         const res = await refreshRequest.get('/login/token/refresh')
-        console.log('re', res)
+        // console.log('re', res)
         window.localStorage.setItem('access_token', res.data.access_token)
       } catch (err) {
         // login again

@@ -23,6 +23,8 @@ export const homeRoutes = {
     {
       path: '/',
       component: HomeIndex,
+      // redirect: '/cvs'
+      redirect: '/cvs/wcw/editor',
     },
     {
       path: '/template',

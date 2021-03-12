@@ -79,6 +79,13 @@ export default {
   },
 
   mounted() {
+    const path = this.$route.fullPath
+    if (path.includes('cvs') && path.includes('editor')) {
+      const uid = window.localStorage.getItem('uid')
+      const userid = uid ? uid : 'wcw'
+      location.hash = `cvs/${userid.split('-')[0]}/editor`
+    }
+
     this.rawWidth = this.resumeWidth = this.$el.offsetWidth
     this.$nextTick(() => {
       addResizeListener(this.$el, this.resetResumeWidth)

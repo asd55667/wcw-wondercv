@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import BaseForm from './BaseForm'
+import BaseForm from './components/BaseForm'
 
 import {
   mapState as mapUserState,
@@ -89,84 +89,19 @@ import {
   mapActions as mapResumeActions,
 } from '@/store/helper/resume'
 
-import { createBasic, updateBasic } from '@/api'
+import { updateBasic } from '@/api'
 
 export default {
   components: { BaseForm },
   data() {
-    return {
-      basicPlaceholder: {
-        user: {
-          name: { desc: '姓名', value: '' },
-          avatar: { desc: '', src: '' },
-        },
-        contact: {
-          telephone: { desc: '电话', value: '' },
-          email: { desc: '邮箱', value: '' },
-          city: { desc: '现居城市', value: '' },
-        },
-        social: {
-          website: {
-            desc: '个人网站',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-          linkin: {
-            desc: 'LinkedIn',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-          wechat: {
-            desc: 'wexin',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-        },
-        other: {
-          age: {
-            desc: '年龄或生日',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-          sex: {
-            desc: '性别',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-        },
-        intension: {
-          workIntension: {
-            desc: '求职意向',
-            value: '前端开发',
-            placeholder: '如：github.com/wondercv.com',
-          },
-          currentJob: {
-            desc: '当前工作状态',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-          expectSalary: {
-            desc: '期望薪资',
-            value: null,
-            placeholder: '如：github.com/wondercv.com',
-          },
-        },
-      },
-    }
+    return {}
   },
   methods: {
     submitForm() {
       this.$refs['basicForm'].validate(async valid => {
         if (valid) {
-          const form = Object.assign({}, this.info.basic)
-          let res
-          if (this.info.basic.user.name.value) {
-            const uid = window.localStorage.getItem('uid')
-            res = await updateBasic(uid, form)
-          } else {
-            res = await createBasic(form)
-          }
-          console.log(res)
+          const uid = window.localStorage.getItem('uid')
+          await updateBasic(uid, this.info.basic)
         } else {
           alert('fmt error!')
           return false
@@ -186,16 +121,12 @@ export default {
   computed: {
     ...mapUserState(['info']),
     ...mapUserGetters(['socialTags', 'otherTags']),
-    ...mapResumeState(['formIdx', 'isNewForm']),
+    ...mapResumeState(['formIdx']),
     staticValidateForm() {
-      const form = {}
-      Object.assign(form, this.info.basic.contact, this.info.basic.user)
-      return form
+      return Object.assign({}, this.info.basic.contact, this.info.basic.user)
     },
     dynamicValidateForm() {
-      const tags = {}
-      Object.assign(tags, this.socialTags.tags, this.otherTags.tags)
-      return tags
+      return Object.assign({}, this.socialTags.tags, this.otherTags.tags)
     },
     basicForm() {
       return {
@@ -208,19 +139,11 @@ export default {
         arr: [
           {
             gname: '社交信息',
-            tags: this.newForm
-              ? this.basicPlaceholder.social
-              : this.socialTags.emptyTags,
+            tags: this.socialTags.emptyTags,
           },
           {
             gname: '其他信息',
-            tags: this.newForm
-              ? Object.assign(
-                  {},
-                  this.basicPlaceholder.other,
-                  this.basicPlaceholder.intension,
-                )
-              : this.otherTags.emptyTags,
+            tags: this.otherTags.emptyTags,
           },
         ],
       }
