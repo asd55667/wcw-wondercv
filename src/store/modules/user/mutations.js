@@ -5,6 +5,7 @@ export default {
 
   setUserInfo(state, info) {
     state.info = info
+    // console.log(state.info);
   },
 
   updateAvatar(state, img) {
@@ -49,7 +50,7 @@ export default {
   },
 
   // refresh exist item's update time, push new item to bucket
-  w(state, payload) {
+  updateExperience(state, payload) {
     const {
       info,
       info: { basic },

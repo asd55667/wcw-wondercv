@@ -2,7 +2,7 @@
   <div class="editor">
     <div class="pc-nav">
       <Header>
-        <router-link to="/" slot="left" @click.native="switchTab(0)">
+        <router-link to="/index" slot="left" @click.native="switchTab(0)">
           <img
             class="left"
             src="https://photo.wondercv.com/white-logo.png"

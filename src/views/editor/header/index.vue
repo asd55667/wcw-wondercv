@@ -16,7 +16,14 @@
         <div style="display:inline-flex;">
           <hide>
             <div slot="content">
-              此刻有 <span class="number">8,947</span> 位求职者在超级简历陪你
+              此刻有
+              <CountUp
+                class="number"
+                :startVal="Number(8127)"
+                :endVal="peoples"
+              ></CountUp>
+              <!-- <span class="number">{{ peoples }}</span>  -->
+              位求职者在超级简历陪你
             </div>
             <div slot="hide" class="discuss">
               <h1>加入校友群讨论</h1>
@@ -66,25 +73,29 @@
 </template>
 
 <script>
-import Header from '@/layout/Header'
-import Hide from '@/views/common/Hide'
-import ShareCv from './pendant/ShareCv'
-import { cloneNode } from '@/utils'
+import Header from '@/layout/Header';
+import Hide from '@/views/common/Hide';
+import ShareCv from './pendant/ShareCv';
+
+import CountUp from '@/components/CountUp';
+
+import { cloneNode } from '@/utils';
 
 import {
   mapState as mapUserState,
   mapGetters as mapUserGetters,
   mapActions as mapUserActions,
   mapMutations as mapUserMutations,
-} from '@/store/helper/user'
+} from '@/store/helper/user';
 
-import { sendEmail } from '@/api'
+import { sendEmail, getFont } from '@/api';
 
 export default {
   components: {
     Header,
     Hide,
     ShareCv,
+    CountUp,
   },
   data() {
     return {
@@ -94,80 +105,84 @@ export default {
         { name: '复制简历', id: 3 },
         { name: '删除', id: 4 },
       ],
-    }
+      peoples: 1,
+      font: 'FZLTCXHJW-normal.js',
+    };
   },
   created() {
     // this.downloadCV()
+    this.getUserCount();
+    getFont(this.font);
   },
   methods: {
     translation() {
-      console.log('translate')
+      console.log('translate');
     },
 
     optionFunc(e, id) {
       switch (id) {
         case 1:
-          this.downloadCV()
-          break
+          this.downloadCV();
+          break;
         case 2:
-          this.printCV()
-          break
+          this.printCV();
+          break;
         case 3:
-          this.copyCV()
-          break
+          this.copyCV();
+          break;
         case 4:
-          this.deleteCV()
-          break
+          this.deleteCV();
+          break;
       }
     },
 
     generateResumeNode() {
-      const resume = cloneNode(document.querySelector('#resume'), false)
-      if (!this.info.basic.user.avatar) {
-        const avatar = resume.querySelector('.avatar')
-        avatar.parentNode.removeChild(avatar)
+      const resume = cloneNode(document.querySelector('#resume'), false);
+      if (!this.info.basic.user.avatar.src) {
+        const avatar = resume.querySelector('.avatar');
+        avatar.parentNode.removeChild(avatar);
       }
-      resume.style.transform = `scale(${(595 / 793) * 1.16})`
+      resume.style.transform = `scale(${(595 / 793) * 1.16})`;
       // resume.style.width = '595px'
       // resume.style.height = '841px'
-      const cv = document.querySelector('.cv')
-      const height = getComputedStyle(cv, null).height.slice(0, -2)
-      resume.style.height = `${+height * 2}px`
-      resume.style.fontFamily = 'FZLTCXHJW'
+      const cv = document.querySelector('.cv');
+      const height = getComputedStyle(cv, null).height.slice(0, -2);
+      resume.style.height = `${+height * 2}px`;
+      resume.style.fontFamily = `${this.font.split('-')[0]}`;
       // resume.style.fontFamily = 'WeiRuanYaHei'
 
-      resume.style.letterSpacing = `${1.4}px`
-      return resume
+      resume.style.letterSpacing = `${1.4}px`;
+      return resume;
     },
 
     sendToEmail(payload) {
-      const { email, filename } = payload
-      const resume = this.generateResumeNode()
-      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
+      const { email, filename } = payload;
+      const resume = this.generateResumeNode();
+      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true);
 
-      const msg = this.$message
+      const msg = this.$message;
       pdf.html(resume, {
         callback: async function(pdf) {
           // const cv = pdf.output('arraybuffer')
-          const cv = pdf.output()
-          const res = await sendEmail({ cv, email, filename })
-          if (res.status !== 200) return msg.error(`登录失败`)
+          const cv = pdf.output();
+          const res = await sendEmail({ cv, email, filename });
+          if (res.status !== 200) return msg.error(`发送失败`);
           else {
-            msg.success(`${res.data}`)
+            msg.success(`${res.data.msg}`);
           }
         },
-      })
+      });
     },
 
     downloadCV() {
-      const resume = this.generateResumeNode()
-      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true)
+      const resume = this.generateResumeNode();
+      let pdf = new window.jspdf.jsPDF('p', 'pt', 'a4', true);
       // console.log(pdf.getFontList())
       pdf.html(resume, {
         callback: function(pdf) {
-          pdf.save('wcw.pdf')
+          pdf.save('wcw.pdf');
         },
-      })
+      });
     },
 
     printCV() {
@@ -176,15 +191,30 @@ export default {
         type: 'html',
         honorColor: true,
         targetStyles: ['*'],
-      })
+      });
     },
     copyCV() {},
     deleteCV() {},
+
+    getUserCount() {
+      const self = this;
+      var socket = io('http://localhost:8081', {
+        withCredential: true,
+        // transports: ['websocket'],
+        // upgrade: false,
+      });
+      socket.on('getUserCount', function(cnt) {
+        self.peoples = cnt;
+      });
+    },
   },
   computed: {
     ...mapUserState(['info']),
   },
-}
+  watch: {
+    peoples(newCnt, oldCnt) {},
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -228,7 +258,7 @@ export default {
 
 .middle {
   color: #efefef;
-  line-height: 56px;
+  // line-height: 56px;
   // left: 50%;
   // transform: translateX(-50%);
   // padding-right: 50px;

@@ -1,7 +1,9 @@
-const path = require('path')
+const path = require('path');
+const PrerenderSPAPlugin = require('prerender-spa-plugin');
+const Renderer = PrerenderSPAPlugin.PuppeteerRenderer;
 
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, dir);
 }
 
 module.exports = {
@@ -14,20 +16,21 @@ module.exports = {
       warnings: false,
       errors: true,
     },
-    proxy: {
-      '/': {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-        secure: false,
-        pathRewrite: {
-          '^/': '/',
-        },
-        headers: {
-          Connection: 'keep-alive',
-        },
-      },
-    },
-    // proxy: 'http://localhost:8081',
+    // proxy: {
+    //   '/': {
+    //     target: 'http://localhost:8081',
+    //     changeOrigin: true,
+    //     secure: false,
+    //     pathRewrite: {
+    //       '^/': '/',
+    //     },
+    //     headers: {
+    //       Connection: 'keep-alive',
+    //     },
+    //   },
+    //   '/fonts': 'http://localhost:8081',
+    // },
+    proxy: 'http://localhost:8081',
   },
 
   configureWebpack: {
@@ -40,6 +43,19 @@ module.exports = {
     externals: {
       html2canvas: 'html2canvas',
     },
+    // plugins: [
+    //   new PrerenderSPAPlugin({
+    //     staticDir: path.join(__dirname, 'dist'),
+    //     routes: ['/cvs/wcw/editor'],
+    //     renderer: new Renderer({
+    //       inject: {},
+    //       // headless: false,
+    //       renderAfterDocumentEvent: 'render-event',
+    //       args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    //       executablePath: '/Users/Study/python/chromedriver',
+    //     }),
+    //   }),
+    // ],
   },
 
   chainWebpack: config => {
@@ -47,7 +63,7 @@ module.exports = {
       config
         .entry('app')
         .clear()
-        .add('./src/main-prod.js')
+        .add('./src/main-prod.js');
       config.set('externals', {
         vue: 'Vue',
         'vue-router': 'VueRouter',
@@ -56,22 +72,22 @@ module.exports = {
         'vue-quill-editor': 'VueQuillEditor',
         quill: 'quill',
         vuex: 'Vuex',
-      })
+      });
       config.plugin('html').tap(args => {
-        args[0].isProd = true
-        return args
-      })
-    })
+        args[0].isProd = true;
+        return args;
+      });
+    });
 
     config.when(process.env.NODE_ENV === 'development', config => {
       config
         .entry('app')
         .clear()
-        .add('./src/main.js')
+        .add('./src/main.js');
       config.plugin('html').tap(args => {
-        args[0].isProd = false
-        return args
-      })
-    })
+        args[0].isProd = false;
+        return args;
+      });
+    });
   },
-}
+};

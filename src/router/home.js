@@ -22,9 +22,13 @@ export const homeRoutes = {
   children: [
     {
       path: '/',
-      component: HomeIndex,
+      // component: HomeIndex,
       // redirect: '/cvs'
       redirect: '/cvs/wcw/editor',
+    },
+    {
+      path: '/index',
+      component: HomeIndex,
     },
     {
       path: '/template',

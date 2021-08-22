@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import EditorHeader from './header'
-import EditorMenu from './menu'
-import ResumeView from './resume'
+import EditorHeader from './header';
+import EditorMenu from './menu';
+import ResumeView from './resume';
 
 export default {
   components: {
@@ -22,7 +22,10 @@ export default {
     EditorMenu,
     ResumeView,
   },
-}
+  mounted() {
+    // document.dispatchEvent(new Event('render-event'))
+  },
+};
 </script>
 
 <style lang="less" scoped>

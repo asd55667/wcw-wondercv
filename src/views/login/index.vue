@@ -126,14 +126,14 @@
 </template>
 
 <script>
-import { authTest, emailLoginCode, emailLogin, gitLogin } from '@/api'
+import { authTest, emailLoginCode, emailLogin, gitLogin } from '@/api';
 // import { refreshRequest, request } from '@/plugins'
 
 import {
   mapActions as mapUserActions,
   mapState as mapUserState,
   mapGetters as mapUserGetters,
-} from '@/store/helper/user'
+} from '@/store/helper/user';
 
 export default {
   data() {
@@ -173,9 +173,10 @@ export default {
 
       loginForm: {
         email: '344078971@qq.com',
-        email: '123@qq.com',
-        // valCode: 'BCDB',
-        valCode: '1F1A',
+        valCode: 'BCDB',
+        //
+        // email: '123@qq.com',
+        // valCode: '1F1A',
       },
       loginFormRules: {
         email: [
@@ -193,112 +194,115 @@ export default {
 
       valCodeClickable: true,
       valCodeCountDown: 30,
-    }
+    };
   },
 
   methods: {
     reloadQRcode(isEmployee) {
       // init call in created
       if (isEmployee != null) {
-        if (this.isEmployee === isEmployee) return
-        this.isEmployee = isEmployee
+        if (this.isEmployee === isEmployee) return;
+        this.isEmployee = isEmployee;
       }
 
-      this.isQRcodeValid = true
-      this.isLoading = true
+      this.isQRcodeValid = true;
+      this.isLoading = true;
       // async reload qrcode
       setTimeout(() => {
-        this.isLoading = false
-      }, 1000)
+        this.isLoading = false;
+      }, 1000);
     },
 
     switchLogin() {
       if (!this.isWxLogin) {
-        this.reloadQRcode()
+        this.reloadQRcode();
       }
-      this.isWxLogin = !this.isWxLogin
+      this.isWxLogin = !this.isWxLogin;
     },
 
     // email login
     async getValCode() {
       // get login code
       this.$refs.loginFormRef.validate(async valid => {
-        if (!valid) return
+        if (!valid) return;
         const res = await emailLoginCode({
           email: this.loginForm.email,
-        })
+        });
         if (res.status !== 200)
-          return this.$message.error(`获取验证码失败, ${res.data.msg}`)
+          return this.$message.error(`获取验证码失败, ${res.data.msg}`);
         if (res.data.code === -1) {
-          this.$message.warning(`${res.data.msg}`)
+          this.$message.warning(`${res.data.msg}`);
         } else {
-          this.$message.success(`${res.data.msg}`)
+          this.$message.success(`${res.data.msg}`);
         }
-      })
+      });
 
       // ticker
-      this.valCodeClickable = false
+      this.valCodeClickable = false;
       const ticker = setInterval(() => {
-        this.valCodeCountDown--
+        this.valCodeCountDown--;
         if (this.valCodeCountDown == 0) {
-          this.valCodeCountDown = 30
-          this.valCodeClickable = true
-          clearInterval(ticker)
+          this.valCodeCountDown = 30;
+          this.valCodeClickable = true;
+          clearInterval(ticker);
         }
-      }, 1000)
+      }, 1000);
     },
 
     loginMsg(res) {
-      if (res.status !== 200) return this.$message.error(`登录失败`)
+      if (res.status !== 200) return this.$message.error(`登录失败`);
       if (res.data.code === -1) {
-        this.$message.warning(`${res.data.msg}`)
+        this.$message.warning(`${res.data.msg}`);
       } else {
-        const { user_info, access_token, refresh_token, uid } = res.data
-        window.localStorage.setItem('access_token', access_token)
-        window.localStorage.setItem('refresh_token', refresh_token)
-        window.localStorage.setItem('uid', uid)
-        this.$router.go(-1)
-        this.authlogin(user_info)
-        this.$message.success(`登录成功`)
+        const { user_info, access_token, refresh_token, uid } = res.data;
+        window.localStorage.setItem('access_token', access_token);
+        window.localStorage.setItem('refresh_token', refresh_token);
+        window.localStorage.setItem('uid', uid);
+        this.$router.go(-1);
+        this.authlogin(user_info);
+        this.$message.success(`登录成功`);
       }
     },
 
     async loginWithEmail() {
       this.$refs.loginFormRef.validate(async valid => {
-        if (!valid) return
+        if (!valid) return;
         // const res = await emailLogin(this.loginForm)
-        console.log(`%c email login`, 'background: green; color: #fff')
+        console.log(`%c email login`, 'background: green; color: #fff');
         emailLogin(this.loginForm).then(res => {
-          this.loginMsg(res)
-        })
-      })
+          this.loginMsg(res);
+        });
+      });
     },
 
     // github oauth2 login
     async oauth2() {
-      window.open('/login/github/token', '_blank')
+      window.open('/login/github/token', '_blank');
       // window.open('/github', '_blank')
       const ticker = setInterval(async () => {
-        console.log('Auth...')
+        console.log('Auth...');
         if (window.localStorage.getItem('access_token')) {
-          clearInterval(ticker)
+          clearInterval(ticker);
           // const res = await gitLogin()
-          console.log(`%c github login`, 'background: green; color: #fff')
+          console.log(`%c github login`, 'background: green; color: #fff');
           gitLogin().then(res => {
-            this.loginMsg(res)
-          })
+            this.loginMsg(res);
+          });
           // this.loginMsg(res)
           // console.log(res)
         }
-      }, 1000)
+      }, 1000);
     },
 
     ...mapUserActions(['authlogin']),
   },
   created() {
-    this.reloadQRcode()
+    this.reloadQRcode();
   },
-}
+  mounted() {
+    console.log(this.$refs.loginFormRef);
+  },
+};
 </script>
 
 <style lang="less" scoped>
