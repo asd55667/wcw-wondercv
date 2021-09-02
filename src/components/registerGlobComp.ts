@@ -7,14 +7,24 @@ import {
   Layout,
   Carousel,
   Form,
+  Popover,
+  Divider,
 } from 'ant-design-vue';
 
-const compList = [Button.Group];
+const compList = [
+  //
+  Button,
+  Input,
+  Layout,
+  Carousel,
+  Form,
+  Popover,
+  Divider,
+];
 
 export function registerGlobComp(app: App) {
   compList.forEach((component) => {
-    app.component(component.name || component.displayName, component);
+    // app.component(component.name || component.displayName, component);
+    app.use(component);
   });
-
-  app.use(Input).use(Button).use(Carousel).use(Form).use(Layout);
 }

@@ -267,8 +267,8 @@
       }
 
       .reload {
-        left: 8px;
-        top: 12px;
+        left: 0;
+        top: 10px;
         display: block;
         width: 170px;
         height: 170px;
@@ -390,32 +390,6 @@
   .git-img {
     border: 1px solid red;
     border-radius: 50%;
-  }
-
-  .pa {
-    position: absolute;
-  }
-
-  .pr {
-    position: relative;
-  }
-
-  .fcenter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .flex1 {
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .txt-overflow {
-    word-break: keep-all;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
   }
 
   .ant-form-item {

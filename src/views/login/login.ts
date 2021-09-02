@@ -1,9 +1,10 @@
 import { message, Form } from 'ant-design-vue';
 import { reactive, ref, toRaw } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 import type { ToggleItem, Email, ValidationRules, LoginData } from '#/views/login';
 
 import { emailLogin, emailLoginCode, gitLogin } from '@/api';
+import { userStore } from '@/store';
 
 export const EmailCodeInterval = 30;
 
@@ -92,6 +93,9 @@ export function reloadQRCode(isEmployee?: boolean): void {
   setTimeout(() => {
     loginData.isLoading = false;
   }, 1000);
+  setTimeout(() => {
+    loginData.isQRCodeValid = false;
+  }, 2000);
 }
 
 export function switchLogin(): void {
@@ -132,7 +136,8 @@ export function loginMsg(res: any): any {
     return message.warning(`${res.data.msg}`);
   }
   const {
-    //  user_info,
+    //
+    user_info,
     access_token,
     refresh_token,
     uid,
@@ -140,8 +145,8 @@ export function loginMsg(res: any): any {
   window.localStorage.setItem('access_token', access_token);
   window.localStorage.setItem('refresh_token', refresh_token);
   window.localStorage.setItem('uid', uid);
-  useRouter().go(-1);
-  // authLogin(user_info);
+  // useRouter().go(-1);
+  userStore().authLogin(user_info);
   return message.success('登录成功');
 }
 

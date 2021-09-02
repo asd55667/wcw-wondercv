@@ -36,7 +36,7 @@
     "allowSyntheticDefaultImports": true,
 
     /* Source Map Options */
-    "sourceMap": false,
+    "sourceMap": true,
     // "sourceRoot": ".",
     // "mapRoot": ".",
     // "inlineSourceMap": true,

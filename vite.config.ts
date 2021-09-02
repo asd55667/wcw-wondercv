@@ -50,6 +50,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       proxy: {
         //
         '/login': 'http://localhost:8081',
+        '/resume': 'http://localhost:8081',
+        '/github': 'http://localhost:8081',
       },
     },
 

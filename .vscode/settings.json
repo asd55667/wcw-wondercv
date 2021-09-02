@@ -134,6 +134,8 @@
     "vitejs",
     "mockjs",
     "stylelint",
-    "antd"
+    "antd",
+    "lintstagedrc",
+    "loglevel"
   ]
 }

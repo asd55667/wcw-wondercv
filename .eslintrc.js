@@ -35,6 +35,7 @@ module.exports = {
     'no-unneeded-ternary': 'off',
     'no-param-reassign': 'off',
     'no-console': 'off',
+    'no-return-assign': 'off',
     'no-restricted-syntax': 'off',
     'max-classes-per-file': 'off',
     'class-methods-use-this': 'off',
